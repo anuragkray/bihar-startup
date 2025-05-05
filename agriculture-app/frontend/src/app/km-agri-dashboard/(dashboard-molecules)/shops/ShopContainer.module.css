@@ -25,6 +25,7 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 60px;
+  padding-bottom: 32px;
 }
 
 .item {
@@ -78,12 +79,6 @@
   .item {
     width: 50%;
     max-width: 300px;
-  }
-  .shopContainer {
-    height: auto;
-    background: url("/images/Dashboard_Back_Image.jpg");
-    background-size: cover; /* Single image fills container */
-    background-position: center;
   }
   .shopContainer {
     height: auto;

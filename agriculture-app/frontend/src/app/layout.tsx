@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Header from "./km-agri-dashboard/(dashboard-molecules)/header/Header";
-import Footer from "./km-agri-dashboard/(dashboard-molecules)/footer/footer";
+import Header from "../components/header/Header";
+import Footer from "../components/footer/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

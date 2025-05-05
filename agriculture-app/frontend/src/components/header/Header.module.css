@@ -7,6 +7,13 @@
   padding: 10px 20px;
   /* height: 80px; */
 }
+.link {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  align-items: center;
+}
+
 
 .left {
   display: flex;

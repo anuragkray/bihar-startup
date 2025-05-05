@@ -1,7 +1,11 @@
+import ComingSoonCard from "@/components/coming-soon/CommingSoonCard";
 import React from "react";
 
 const page = () => {
-  return <div>hello</div>;
+  return(
+
+<ComingSoonCard/>
+  )
 };
 
 export default page;

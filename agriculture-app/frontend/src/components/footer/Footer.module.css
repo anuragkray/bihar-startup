@@ -3,6 +3,12 @@
   color: white;
   padding: 20px 0;
   text-align: center;
+
+  /* Sticky footer behavior */
+  position: sticky;
+  top: 100vh;
+  height: 150px;
+  margin-top: auto;
 }
 
 .footerContainer {
@@ -11,14 +17,14 @@
   align-items: center;
   max-width: 1200px;
   margin: 0 auto;
-  flex-wrap: wrap; /* Ensures responsiveness */
+  flex-wrap: wrap;
   padding: 0 20px;
-  height: 150px;
+  height: 100%; /* Match parent footer height */
 }
 
 .footerSection {
   flex: 1;
-  min-width: 250px; /* Ensures proper spacing */
+  min-width: 250px;
   text-align: center;
 }
 
