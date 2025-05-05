@@ -7,7 +7,7 @@
   /* Sticky footer behavior */
   position: sticky;
   top: 100vh;
-  height: 150px;
+  height: auto; /* Let height adjust based on content */
   margin-top: auto;
 }
 
@@ -19,19 +19,44 @@
   margin: 0 auto;
   flex-wrap: wrap;
   padding: 0 20px;
-  height: 100%; /* Match parent footer height */
+  gap: 20px;
 }
 
 .footerSection {
   flex: 1;
   min-width: 250px;
   text-align: center;
+  padding: 10px;
 }
 
+/* Tablet view */
 @media (max-width: 768px) {
   .footerContainer {
     flex-direction: column;
+    align-items: center;
     text-align: center;
-    gap: 15px;
+    gap: 20px;
+  }
+
+  .footerSection {
+    min-width: unset;
+    width: 100%;
+  }
+}
+
+/* Mobile view */
+@media (max-width: 480px) {
+  .footer {
+    padding: 16px 0;
+  }
+
+  .footerContainer {
+    padding: 0 10px;
+    gap: 16px;
+  }
+
+  .footerSection {
+    font-size: 14px;
+    padding: 8px;
   }
 }

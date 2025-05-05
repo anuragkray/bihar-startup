@@ -10,11 +10,7 @@ const nextConfig: import("next").NextConfig = {
   // },
   async redirects() {
     return [
-      {
-        source: "/",
-        destination: "/km-agri-dashboard",
-        permanent: true, // 308 Redirect
-      },
+    
     ];
   },
 };
