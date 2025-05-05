@@ -1,0 +1,31 @@
+.footer {
+  background: linear-gradient(to right, #4A9D17, #1A3708);
+  color: white;
+  padding: 20px 0;
+  text-align: center;
+}
+
+.footerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  flex-wrap: wrap; /* Ensures responsiveness */
+  padding: 0 20px;
+  height: 150px;
+}
+
+.footerSection {
+  flex: 1;
+  min-width: 250px; /* Ensures proper spacing */
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .footerContainer {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+}

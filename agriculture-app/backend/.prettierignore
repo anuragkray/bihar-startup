@@ -1,0 +1,9 @@
+# Normal Folder
+/.vscode
+/node_modules
+./dist
+
+# Environment Variable
+*.env
+.env
+.env.*
