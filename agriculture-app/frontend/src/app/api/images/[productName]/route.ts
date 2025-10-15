@@ -1,30 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Cloudinary configuration from environment variables
+const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
-const productImageIds: Record<string, string[]> = {
-  // Seeds Shop
-  "wheat-seeds": ["1reRrfhSsWzESmunJ5JxNTOWgOJL5vNlZ","1X1boqVCeLyjR7yglU-vjBHOPJnr9oJTJ"], // 
-  "rice-seeds": [],
-  "corn-seeds": [],
-  "vegetable-seeds": [],
-  "mustard-seeds": [],
-  "pulse-seeds": [],
+
+const productImageNames: Record<string, string[]> = {
+  "wheat-seeds": ["wheat_fcub16.jpg", "wheat_2.jpg"],
+  "paddy-seeds": ["paddy_m5zcm7.jpg", "rice_2_gimjva.jpg"],
+  "corn-seeds": ["maize_hwxutd.jpg", "maize_1_fxtuwc.jpg"],
+  sugarcane: ["sugarcane_1_nszvwz.jpg", "sugarcane_ngsqa1.jpg"],
+  "mustard-seeds": ["mustard_uy08ca.jpg", "mustard_1_frzxn2.jpg"],
+  "pearl-millet-seeds": ["bazara_sen0vl.jpg"],
 
   // Pesticide Shop
   "insecticide-spray": [],
-  "fungicide": [],
-  "herbicide": [],
+  fungicide: [],
+  herbicide: [],
   "organic-pesticide": [],
-  "rodenticide": [],
-  "nematicide": [],
+  rodenticide: [],
+  nematicide: [],
 
   // Farming Equipment Shop
-  "plough": [],
-  "cultivator": [],
+  plough: [],
+  cultivator: [],
   "seed-drill": [],
-  "harvester": [],
-  "sprayer": [],
-  "thresher": [],
+  harvester: [],
+  sprayer: [],
+  thresher: [],
 
   // Tractor Shop
   "mini-tractor-25hp": [],
@@ -44,20 +46,20 @@ const productImageIds: Record<string, string[]> = {
 
   // Fertilizer Shop
   "npk-fertilizer": [],
-  "urea": [],
-  "dap": [],
+  urea: [],
+  dap: [],
   "organic-compost": [],
-  "potash": [],
+  potash: [],
   "micronutrient-mix": [],
 };
 
 // Fallback image URL - simple placeholder
-const FALLBACK_IMAGE_URL = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f0f0f0' width='400' height='300'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='18' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
+const FALLBACK_IMAGE_URL =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='300'%3E%3Crect fill='%23f0f0f0' width='400' height='300'/%3E%3Ctext fill='%23999' font-family='sans-serif' font-size='18' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
 
-// Helper function to convert Google Drive file ID to direct image URL
-function getGoogleDriveImageUrl(fileId: string): string {
-  // Use thumbnail format which works better for public images
-  return `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+// Helper function to generate Cloudinary image URL
+function getCloudinaryImageUrl(imageName: string): string {
+  return `https://res.cloudinary.com/${CLOUDINARY_CLOUD_NAME}/image/upload/${imageName}`;
 }
 
 export async function GET(
@@ -66,46 +68,41 @@ export async function GET(
 ) {
   try {
     const { productName } = await params;
-    
+
     // Convert product name to key format (lowercase, replace spaces with hyphens)
     const key = productName.toLowerCase().replace(/\s+/g, "-");
-    
-    console.log('Product Name:', productName);
-    console.log('Key:', key);
-    console.log('Available keys:', Object.keys(productImageIds));
-    
-    // Get file IDs array from mapping
-    const fileIds = productImageIds[key];
-    
-    console.log('File IDs for', key, ':', fileIds);
-    
-    // If file IDs not found or empty, return fallback
-    if (!fileIds || fileIds.length === 0) {
+
+    // Get image names array from mapping
+    const imageNames = productImageNames[key];
+
+    // If image names not found or empty, return fallback
+    if (!imageNames || imageNames.length === 0) {
       return NextResponse.json({
         images: [FALLBACK_IMAGE_URL],
         source: "fallback",
-        message: "Google Drive images not configured for this product"
+        message: "Cloudinary images not configured for this product",
       });
     }
-    
-    // Convert all file IDs to Google Drive image URLs
-    const imageUrls = fileIds.map(fileId => getGoogleDriveImageUrl(fileId));
-    
+
+    // Convert all image names to Cloudinary URLs
+    const imageUrls = imageNames.map((imageName) =>
+      getCloudinaryImageUrl(imageName)
+    );
+
     return NextResponse.json({
       images: imageUrls,
-      source: "google-drive",
+      source: "cloudinary",
       productName: productName,
       key: key,
-      count: imageUrls.length
+      count: imageUrls.length,
     });
-    
   } catch (error) {
-    console.error('Error fetching image URLs:', error);
+    console.error("Error fetching image URLs:", error);
     return NextResponse.json(
       {
         images: [FALLBACK_IMAGE_URL],
         source: "fallback",
-        error: "Failed to fetch image URLs"
+        error: "Failed to fetch image URLs",
       },
       { status: 500 }
     );

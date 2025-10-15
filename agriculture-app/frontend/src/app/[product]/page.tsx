@@ -7,13 +7,10 @@ import Image from "next/image";
 // Helper function to get image URLs from API (returns array of images)
 async function fetchImageUrls(productName: string): Promise<string[]> {
   try {
-    console.log("Fetching images for:", productName);
     const response = await fetch(
       `/api/images/${encodeURIComponent(productName)}`
     );
     const data = await response.json();
-    console.log("API Response:", data);
-    console.log("Images:", data.images);
     return data.images || [];
   } catch (error) {
     console.error("Error fetching image URLs:", error);
@@ -30,14 +27,14 @@ const shopData: Record<string, any> = {
       {
         id: 1,
         name: "Wheat Seeds",
-        price: "₹500/kg",
+        price: "₹2680/Quintal",
         image: "", // Will be loaded from API
         description: "Premium quality wheat seeds with high yield",
       },
       {
         id: 2,
-        name: "Rice Seeds",
-        price: "₹600/kg",
+        name: "Paddy Seeds",
+        price: "₹2300/Quintal",
         image: "",
         description: "Hybrid rice seeds for better production",
       },
@@ -50,7 +47,7 @@ const shopData: Record<string, any> = {
       },
       {
         id: 4,
-        name: "Vegetable Seeds",
+        name: "Sugarcane",
         price: "₹300/pack",
         image: "",
         description: "Mixed vegetable seeds pack",
@@ -64,7 +61,7 @@ const shopData: Record<string, any> = {
       },
       {
         id: 6,
-        name: "Pulse Seeds",
+        name: "Pearl Millet Seeds",
         price: "₹550/kg",
         image: "",
         description: "Various pulse seeds for cultivation",
@@ -325,7 +322,13 @@ interface PageProps {
 }
 
 // Product Card Component with loading state
-const ProductCard = ({ product }: { product: any }) => {
+const ProductCard = ({
+  product,
+  isFirst,
+}: {
+  product: any;
+  isFirst?: boolean;
+}) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   if (!product.image) {
@@ -346,10 +349,11 @@ const ProductCard = ({ product }: { product: any }) => {
           }`}
           onLoad={() => setImageLoaded(true)}
           onError={(e) => {
-            console.error('Image load error for:', product.name, product.image);
+            console.error("Image load error for:", product.name, product.image);
             setImageLoaded(true);
           }}
-          loading="lazy"
+          priority={isFirst}
+          loading={isFirst ? undefined : "lazy"}
           unoptimized
         />
       </div>
@@ -388,7 +392,6 @@ const ShopPage = ({ params }: PageProps) => {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const shopInfo = shopData[product];
-  console.log("PDODUCT", products);
   // Load images from API
   useEffect(() => {
     if (shopInfo && shopInfo.products.length > 0) {
@@ -438,16 +441,21 @@ const ShopPage = ({ params }: PageProps) => {
 
       <div className={styles.productsGrid}>
         {loading
-          ? shopInfo.products.map((product: any) => (
+          ? shopInfo.products.map((product: any, index: number) => (
               <ProductCard
                 key={product.id}
                 product={{
                   ...product,
                 }}
+                isFirst={index === 0}
               />
             ))
-          : products.map((product: any) => (
-              <ProductCard key={product.id} product={product} />
+          : products.map((product: any, index: number) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                isFirst={index === 0}
+              />
             ))}
       </div>
     </div>
