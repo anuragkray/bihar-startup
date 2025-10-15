@@ -1,7 +1,25 @@
 "use client";
-import React, { useState, use } from "react";
+import React, { useState, use, useEffect } from "react";
 import styles from "./shop.module.css";
 import Link from "next/link";
+import Image from "next/image";
+
+// Helper function to get image URLs from API (returns array of images)
+async function fetchImageUrls(productName: string): Promise<string[]> {
+  try {
+    console.log("Fetching images for:", productName);
+    const response = await fetch(
+      `/api/images/${encodeURIComponent(productName)}`
+    );
+    const data = await response.json();
+    console.log("API Response:", data);
+    console.log("Images:", data.images);
+    return data.images || [];
+  } catch (error) {
+    console.error("Error fetching image URLs:", error);
+    return [];
+  }
+}
 
 // Define product data for each shop category
 const shopData: Record<string, any> = {
@@ -13,42 +31,42 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "Wheat Seeds",
         price: "₹500/kg",
-        image: "https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&h=600&fit=crop&q=80",
+        image: "", // Will be loaded from API
         description: "Premium quality wheat seeds with high yield",
       },
       {
         id: 2,
         name: "Rice Seeds",
         price: "₹600/kg",
-        image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Hybrid rice seeds for better production",
       },
       {
         id: 3,
         name: "Corn Seeds",
         price: "₹450/kg",
-        image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Disease-resistant corn seeds",
       },
       {
         id: 4,
         name: "Vegetable Seeds",
         price: "₹300/pack",
-        image: "https://images.unsplash.com/photo-1592841200221-a6898f307baa?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Mixed vegetable seeds pack",
       },
       {
         id: 5,
         name: "Mustard Seeds",
         price: "₹400/kg",
-        image: "https://images.unsplash.com/photo-1615485500704-8e990f9900f7?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "High oil content mustard seeds",
       },
       {
         id: 6,
         name: "Pulse Seeds",
         price: "₹550/kg",
-        image: "https://images.unsplash.com/photo-1583258292688-d0213dc5a3a8?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Various pulse seeds for cultivation",
       },
     ],
@@ -61,42 +79,42 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "Insecticide Spray",
         price: "₹350/liter",
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Broad-spectrum insect control",
       },
       {
         id: 2,
         name: "Fungicide",
         price: "₹400/liter",
-        image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Prevents fungal diseases",
       },
       {
         id: 3,
         name: "Herbicide",
         price: "₹300/liter",
-        image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Effective weed control solution",
       },
       {
         id: 4,
         name: "Organic Pesticide",
         price: "₹500/liter",
-        image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Eco-friendly pest control",
       },
       {
         id: 5,
         name: "Rodenticide",
         price: "₹250/pack",
-        image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Rodent control solution",
       },
       {
         id: 6,
         name: "Nematicide",
         price: "₹450/liter",
-        image: "https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Controls nematode infestations",
       },
     ],
@@ -109,42 +127,42 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "Plough",
         price: "₹5,000",
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Heavy-duty plough for soil preparation",
       },
       {
         id: 2,
         name: "Cultivator",
         price: "₹8,000",
-        image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Multi-purpose cultivator",
       },
       {
         id: 3,
         name: "Seed Drill",
         price: "₹12,000",
-        image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Precision seed planting equipment",
       },
       {
         id: 4,
         name: "Harvester",
         price: "₹25,000",
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Manual harvesting tool",
       },
       {
         id: 5,
         name: "Sprayer",
         price: "₹3,500",
-        image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Agricultural sprayer for pesticides",
       },
       {
         id: 6,
         name: "Thresher",
         price: "₹15,000",
-        image: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Grain threshing machine",
       },
     ],
@@ -157,42 +175,42 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "Mini Tractor 25HP",
         price: "₹3,50,000",
-        image: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Compact tractor for small farms",
       },
       {
         id: 2,
         name: "Medium Tractor 40HP",
         price: "₹5,50,000",
-        image: "https://images.unsplash.com/photo-1589923188900-85dae523342b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Versatile medium-sized tractor",
       },
       {
         id: 3,
         name: "Heavy Tractor 60HP",
         price: "₹8,00,000",
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "High-power tractor for large fields",
       },
       {
         id: 4,
         name: "Tractor Trolley",
         price: "₹75,000",
-        image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Heavy-duty tractor trolley",
       },
       {
         id: 5,
         name: "Rotavator Attachment",
         price: "₹45,000",
-        image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Tractor-mounted rotavator",
       },
       {
         id: 6,
         name: "Tractor Loader",
         price: "₹1,20,000",
-        image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Front-end loader attachment",
       },
     ],
@@ -205,42 +223,42 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "Drip Irrigation Kit",
         price: "₹8,000",
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Complete drip irrigation system",
       },
       {
         id: 2,
         name: "Sprinkler System",
         price: "₹12,000",
-        image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Automatic sprinkler irrigation",
       },
       {
         id: 3,
         name: "Water Pump",
         price: "₹15,000",
-        image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "High-efficiency water pump",
       },
       {
         id: 4,
         name: "PVC Pipes",
         price: "₹150/meter",
-        image: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Durable irrigation pipes",
       },
       {
         id: 5,
         name: "Water Tank",
         price: "₹20,000",
-        image: "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Large capacity water storage",
       },
       {
         id: 6,
         name: "Irrigation Timer",
         price: "₹2,500",
-        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Automatic irrigation controller",
       },
     ],
@@ -253,42 +271,42 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "NPK Fertilizer",
         price: "₹800/bag",
-        image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Balanced NPK formula 19-19-19",
       },
       {
         id: 2,
         name: "Urea",
         price: "₹600/bag",
-        image: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "High nitrogen content fertilizer",
       },
       {
         id: 3,
         name: "DAP",
         price: "₹1,200/bag",
-        image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Di-ammonium phosphate fertilizer",
       },
       {
         id: 4,
         name: "Organic Compost",
         price: "₹400/bag",
-        image: "https://images.unsplash.com/photo-1628352081506-83c43123ed6d?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "100% organic compost",
       },
       {
         id: 5,
         name: "Potash",
         price: "₹900/bag",
-        image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Potassium-rich fertilizer",
       },
       {
         id: 6,
         name: "Micronutrient Mix",
         price: "₹500/kg",
-        image: "https://images.unsplash.com/photo-1585435557343-3b092031a831?w=800&h=600&fit=crop&q=80",
+        image: "",
         description: "Essential micronutrients blend",
       },
     ],
@@ -309,38 +327,53 @@ interface PageProps {
 // Product Card Component with loading state
 const ProductCard = ({ product }: { product: any }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
-  const imgRef = React.useRef<HTMLImageElement>(null);
 
-  React.useEffect(() => {
-    // Check if image is already loaded (from cache)
-    if (imgRef.current?.complete) {
-      setImageLoaded(true);
-    }
-  }, []);
+  if (!product.image) {
+    return null; // Don't render if no image
+  }
 
   return (
     <div className={styles.productCard}>
       <div className={styles.productImageContainer}>
         {!imageLoaded && <div className={styles.shimmer}></div>}
-        <img
-          ref={imgRef}
+        <Image
           src={product.image}
           alt={product.name}
-          className={`${styles.productImage} ${imageLoaded ? styles.loaded : styles.loading}`}
+          width={400}
+          height={300}
+          className={`${styles.productImage} ${
+            imageLoaded ? styles.loaded : styles.loading
+          }`}
           onLoad={() => setImageLoaded(true)}
-          onError={() => setImageLoaded(true)}
+          onError={(e) => {
+            console.error('Image load error for:', product.name, product.image);
+            setImageLoaded(true);
+          }}
           loading="lazy"
+          unoptimized
         />
       </div>
       <div className={styles.productInfo}>
-        <h3 className={`${styles.productName} ${!imageLoaded ? styles.shimmerText : ''}`}>
+        <h3
+          className={`${styles.productName} ${
+            !imageLoaded ? styles.shimmerText : ""
+          }`}
+        >
           {product.name}
         </h3>
-        <p className={`${styles.productDescription} ${!imageLoaded ? styles.shimmerText : ''}`}>
+        <p
+          className={`${styles.productDescription} ${
+            !imageLoaded ? styles.shimmerText : ""
+          }`}
+        >
           {product.description}
         </p>
         <div className={styles.productFooter}>
-          <span className={`${styles.productPrice} ${!imageLoaded ? styles.shimmerText : ''}`}>
+          <span
+            className={`${styles.productPrice} ${
+              !imageLoaded ? styles.shimmerText : ""
+            }`}
+          >
             {product.price}
           </span>
           <button className={styles.buyButton}>Add to Cart</button>
@@ -352,7 +385,27 @@ const ProductCard = ({ product }: { product: any }) => {
 
 const ShopPage = ({ params }: PageProps) => {
   const { product } = use(params);
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const shopInfo = shopData[product];
+  console.log("PDODUCT", products);
+  // Load images from API
+  useEffect(() => {
+    if (shopInfo && shopInfo.products.length > 0) {
+      const loadImages = async () => {
+        const productsWithImages = await Promise.all(
+          shopInfo.products.map(async (prod: any) => {
+            const imageUrls = await fetchImageUrls(prod.name);
+            // Use the first image as the main product image
+            return { ...prod, image: imageUrls[0], images: imageUrls };
+          })
+        );
+        setProducts(productsWithImages);
+        setLoading(false);
+      };
+      loadImages();
+    }
+  }, [shopInfo]);
 
   // If shop doesn't exist or is coming soon
   if (!shopInfo || shopInfo.products.length === 0) {
@@ -384,9 +437,18 @@ const ShopPage = ({ params }: PageProps) => {
       </div>
 
       <div className={styles.productsGrid}>
-        {shopInfo.products.map((product: any) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
+        {loading
+          ? shopInfo.products.map((product: any) => (
+              <ProductCard
+                key={product.id}
+                product={{
+                  ...product,
+                }}
+              />
+            ))
+          : products.map((product: any) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
       </div>
     </div>
   );
