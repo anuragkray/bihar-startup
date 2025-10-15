@@ -1,0 +1,324 @@
+/* Shop Page Container */
+.shopPage {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+/* Shop Header */
+.shopHeader {
+  max-width: 1400px;
+  margin: 0 auto 40px;
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background: #2d5016;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 500;
+  transition: background 0.3s ease;
+}
+
+.backLink:hover {
+  background: #1a3708;
+}
+
+.shopTitle {
+  font-size: 2.5rem;
+  color: #2d5016;
+  margin: 10px 0;
+  font-weight: 700;
+}
+
+.shopDescription {
+  font-size: 1.1rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Products Grid */
+.productsGrid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 30px;
+  padding: 20px;
+}
+
+/* Product Card */
+.productCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.productCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.productImageContainer {
+  width: 100%;
+  height: 250px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.productCard:hover .productImage {
+  transform: scale(1.1);
+}
+
+.productInfo {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.productName {
+  font-size: 1.4rem;
+  color: #2d5016;
+  margin: 0 0 10px 0;
+  font-weight: 600;
+}
+
+.productDescription {
+  color: #666;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 15px;
+  flex: 1;
+}
+
+.productFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.productPrice {
+  font-size: 1.3rem;
+  color: #2d5016;
+  font-weight: 700;
+}
+
+.buyButton {
+  padding: 10px 24px;
+  background: #2d5016;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.buyButton:hover {
+  background: #1a3708;
+  transform: scale(1.05);
+}
+
+.buyButton:active {
+  transform: scale(0.98);
+}
+
+/* Coming Soon Styles */
+.comingSoonContainer {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+}
+
+.comingSoonCard {
+  background: white;
+  padding: 60px 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  text-align: center;
+  max-width: 600px;
+}
+
+.comingSoonCard h2 {
+  font-size: 2.5rem;
+  color: #2d5016;
+  margin-bottom: 20px;
+}
+
+.comingSoonCard p {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.backButton {
+  display: inline-block;
+  margin-top: 30px;
+  padding: 12px 30px;
+  background: #2d5016;
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1.1rem;
+  transition: background 0.3s ease;
+}
+
+.backButton:hover {
+  background: #1a3708;
+}
+
+/* Shimmer Loading Effect */
+.shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerAnimation 1.5s infinite;
+  border-radius: 12px 12px 0 0;
+}
+
+@keyframes shimmerAnimation {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.productImage.loading {
+  opacity: 0;
+}
+
+.productImage.loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
+.shimmerText {
+  position: relative;
+  color: transparent !important;
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 0%,
+    #e0e0e0 20%,
+    #f0f0f0 40%,
+    #f0f0f0 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmerAnimation 1.5s infinite;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shimmerText::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .shopTitle {
+    font-size: 2rem;
+  }
+
+  .shopDescription {
+    font-size: 1rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 10px;
+  }
+
+  .productCard {
+    margin: 0;
+  }
+
+  .productImageContainer {
+    height: 200px;
+  }
+
+  .productName {
+    font-size: 1.2rem;
+  }
+
+  .productPrice {
+    font-size: 1.1rem;
+  }
+
+  .buyButton {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .comingSoonCard {
+    padding: 40px 20px;
+  }
+
+  .comingSoonCard h2 {
+    font-size: 2rem;
+  }
+
+  .comingSoonCard p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .shopHeader {
+    padding: 15px;
+  }
+
+  .backLink {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+}
