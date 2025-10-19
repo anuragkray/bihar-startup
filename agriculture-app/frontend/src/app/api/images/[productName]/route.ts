@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 // Cloudinary configuration from environment variables
-const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-
+const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME;
 
 const productImageNames: Record<string, string[]> = {
   "wheat-seeds": [
@@ -24,6 +23,10 @@ const productImageNames: Record<string, string[]> = {
     "mustard_3_cabnfc.jpg",
   ],
   "pearl-millet-seeds": ["bazara_sen0vl.jpg", "perl_millet_2_h2wsce.jpg"],
+
+  // Fertilizer Shop
+  urea: ["urea_fgc03l.jpg"],
+  potash: ["potash_2_lavvr9.jpg", "Potash_uvtxf6.jpg"],
 
   // Pesticide Shop
   "insecticide-spray": [],
@@ -56,14 +59,6 @@ const productImageNames: Record<string, string[]> = {
   "pvc-pipes": [],
   "water-tank": [],
   "irrigation-timer": [],
-
-  // Fertilizer Shop
-  "npk-fertilizer": [],
-  urea: [],
-  dap: [],
-  "organic-compost": [],
-  potash: [],
-  "micronutrient-mix": [],
 };
 
 // Fallback image URL - simple placeholder

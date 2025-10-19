@@ -196,67 +196,6 @@
   background: #1a3708;
 }
 
-/* Shimmer Loading Effect */
-.shimmer {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    #f0f0f0 0%,
-    #e0e0e0 20%,
-    #f0f0f0 40%,
-    #f0f0f0 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmerAnimation 1.5s infinite;
-  border-radius: 12px 12px 0 0;
-}
-
-@keyframes shimmerAnimation {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
-}
-
-.productImage.loading {
-  opacity: 0;
-}
-
-.productImage.loaded {
-  opacity: 1;
-  transition: opacity 0.3s ease-in;
-}
-
-.shimmerText {
-  position: relative;
-  color: transparent !important;
-  background: linear-gradient(
-    90deg,
-    #f0f0f0 0%,
-    #e0e0e0 20%,
-    #f0f0f0 40%,
-    #f0f0f0 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmerAnimation 1.5s infinite;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.shimmerText::before {
-  content: attr(data-text);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

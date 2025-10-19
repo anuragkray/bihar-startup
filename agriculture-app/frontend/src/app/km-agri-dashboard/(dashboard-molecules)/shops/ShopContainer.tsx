@@ -60,7 +60,9 @@ const ShopContainer = () => {
           return (
             <div
               key={item.id}
-              className={styles.item}
+              className={`${styles.item} ${
+                item.name === "Fertilizer Shop" ? styles.fertilizerItem : ""
+              }`}
               style={{ backgroundImage: `url(${item.image})` }}
             >
               <div className={styles.itemContent}>

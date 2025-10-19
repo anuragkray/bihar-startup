@@ -27,42 +27,42 @@ const shopData: Record<string, any> = {
       {
         id: 1,
         name: "Wheat Seeds",
-        price: "₹2680/Quintal",
+        price: "₹26.80/Kg",
         image: "", // Will be loaded from API
         description: "Premium quality wheat seeds with high yield",
       },
       {
         id: 2,
         name: "Paddy Seeds",
-        price: "₹2300/Quintal",
+        price: "₹23.00/Kg",
         image: "",
         description: "Hybrid rice seeds for better production",
       },
       {
         id: 3,
         name: "Corn Seeds",
-        price: "₹450/kg",
+        price: "₹26/kg",
         image: "",
         description: "Disease-resistant corn seeds",
       },
       {
         id: 4,
         name: "Sugarcane",
-        price: "₹300/pack",
+        price: "₹2.5/Kg",
         image: "",
         description: "Mixed vegetable seeds pack",
       },
       {
         id: 5,
         name: "Mustard Seeds",
-        price: "₹400/kg",
-        image: "",
+        price: "₹60/kg",
+        image: "₹",
         description: "High oil content mustard seeds",
       },
       {
         id: 6,
         name: "Pearl Millet Seeds",
-        price: "₹550/kg",
+        price: "₹120/kg",
         image: "",
         description: "Various pulse seeds for cultivation",
       },
@@ -316,7 +316,7 @@ interface PageProps {
   }>;
 }
 
-// Product Card Component with loading state
+// Product Card Component
 const ProductCard = ({
   product,
   isFirst,
@@ -326,8 +326,6 @@ const ProductCard = ({
   isFirst?: boolean;
   shopCategory: string;
 }) => {
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   if (!product.image) {
     return null; // Don't render if no image
   }
@@ -335,46 +333,26 @@ const ProductCard = ({
   return (
     <div className={styles.productCard}>
       <div className={styles.productImageContainer}>
-        {!imageLoaded && <div className={styles.shimmer}></div>}
         <Image
           src={product.image}
           alt={product.name}
           width={400}
           height={300}
-          className={`${styles.productImage} ${
-            imageLoaded ? styles.loaded : styles.loading
-          }`}
-          onLoad={() => setImageLoaded(true)}
-          onError={(e) => {
-            console.error("Image load error for:", product.name, product.image);
-            setImageLoaded(true);
-          }}
+          className={styles.productImage}
           priority={isFirst}
           loading={isFirst ? undefined : "lazy"}
           unoptimized
         />
       </div>
       <div className={styles.productInfo}>
-        <h3
-          className={`${styles.productName} ${
-            !imageLoaded ? styles.shimmerText : ""
-          }`}
-        >
+        <h3 className={styles.productName}>
           {product.name}
         </h3>
-        <p
-          className={`${styles.productDescription} ${
-            !imageLoaded ? styles.shimmerText : ""
-          }`}
-        >
+        <p className={styles.productDescription}>
           {product.description}
         </p>
         <div className={styles.productFooter}>
-          <span
-            className={`${styles.productPrice} ${
-              !imageLoaded ? styles.shimmerText : ""
-            }`}
-          >
+          <span className={styles.productPrice}>
             {product.price}
           </span>
           <Link href={`/${shopCategory}/${product.id}`}>
