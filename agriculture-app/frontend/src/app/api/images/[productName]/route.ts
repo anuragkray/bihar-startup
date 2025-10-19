@@ -5,12 +5,25 @@ const CLOUDINARY_CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
 
 
 const productImageNames: Record<string, string[]> = {
-  "wheat-seeds": ["wheat_fcub16.jpg", "wheat_2.jpg"],
-  "paddy-seeds": ["paddy_m5zcm7.jpg", "rice_2_gimjva.jpg"],
-  "corn-seeds": ["maize_hwxutd.jpg", "maize_1_fxtuwc.jpg"],
+  "wheat-seeds": [
+    "wheat_fcub16.jpg",
+    "wheat_2_s3thjf.jpg",
+    "wheat_1_pjurfu.jpg",
+  ],
+  "paddy-seeds": ["paddy_m5zcm7.jpg", "rice_1_tztdva.jpg", "rice_2_gimjva.jpg"],
+  "corn-seeds": [
+    "maize_hwxutd.jpg",
+    "maize_1_fxtuwc.jpg",
+    "maize_2_ynqtzj.jpg",
+    "maize_3_grzpef.jpg",
+  ],
   sugarcane: ["sugarcane_1_nszvwz.jpg", "sugarcane_ngsqa1.jpg"],
-  "mustard-seeds": ["mustard_uy08ca.jpg", "mustard_1_frzxn2.jpg"],
-  "pearl-millet-seeds": ["bazara_sen0vl.jpg"],
+  "mustard-seeds": [
+    "mustard_uy08ca.jpg",
+    "mustard_1_frzxn2.jpg",
+    "mustard_3_cabnfc.jpg",
+  ],
+  "pearl-millet-seeds": ["bazara_sen0vl.jpg", "perl_millet_2_h2wsce.jpg"],
 
   // Pesticide Shop
   "insecticide-spray": [],

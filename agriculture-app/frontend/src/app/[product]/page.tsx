@@ -68,6 +68,54 @@ const shopData: Record<string, any> = {
       },
     ],
   },
+  "fertilizer-shop": {
+    title: "Fertilizer Shop",
+    description: "Quality fertilizers for healthy crops",
+    products: [
+      {
+        id: 1,
+        name: "NPK Fertilizer",
+        price: "₹800/bag",
+        image: "",
+        description: "Balanced NPK formula 19-19-19",
+      },
+      {
+        id: 2,
+        name: "Urea",
+        price: "₹600/bag",
+        image: "",
+        description: "High nitrogen content fertilizer",
+      },
+      {
+        id: 3,
+        name: "DAP",
+        price: "₹1,200/bag",
+        image: "",
+        description: "Di-ammonium phosphate fertilizer",
+      },
+      {
+        id: 4,
+        name: "Organic Compost",
+        price: "₹400/bag",
+        image: "",
+        description: "100% organic compost",
+      },
+      {
+        id: 5,
+        name: "Potash",
+        price: "₹900/bag",
+        image: "",
+        description: "Potassium-rich fertilizer",
+      },
+      {
+        id: 6,
+        name: "Micronutrient Mix",
+        price: "₹500/kg",
+        image: "",
+        description: "Essential micronutrients blend",
+      },
+    ],
+  },
   "pesticide-shop": {
     title: "Pesticide Shop",
     description: "Effective pesticides for crop protection",
@@ -260,59 +308,6 @@ const shopData: Record<string, any> = {
       },
     ],
   },
-  "fertilizer-shop": {
-    title: "Fertilizer Shop",
-    description: "Quality fertilizers for healthy crops",
-    products: [
-      {
-        id: 1,
-        name: "NPK Fertilizer",
-        price: "₹800/bag",
-        image: "",
-        description: "Balanced NPK formula 19-19-19",
-      },
-      {
-        id: 2,
-        name: "Urea",
-        price: "₹600/bag",
-        image: "",
-        description: "High nitrogen content fertilizer",
-      },
-      {
-        id: 3,
-        name: "DAP",
-        price: "₹1,200/bag",
-        image: "",
-        description: "Di-ammonium phosphate fertilizer",
-      },
-      {
-        id: 4,
-        name: "Organic Compost",
-        price: "₹400/bag",
-        image: "",
-        description: "100% organic compost",
-      },
-      {
-        id: 5,
-        name: "Potash",
-        price: "₹900/bag",
-        image: "",
-        description: "Potassium-rich fertilizer",
-      },
-      {
-        id: 6,
-        name: "Micronutrient Mix",
-        price: "₹500/kg",
-        image: "",
-        description: "Essential micronutrients blend",
-      },
-    ],
-  },
-  "comming-soon": {
-    title: "Coming Soon",
-    description: "New products arriving soon",
-    products: [],
-  },
 };
 
 interface PageProps {
@@ -325,9 +320,11 @@ interface PageProps {
 const ProductCard = ({
   product,
   isFirst,
+  shopCategory,
 }: {
   product: any;
   isFirst?: boolean;
+  shopCategory: string;
 }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
@@ -380,7 +377,9 @@ const ProductCard = ({
           >
             {product.price}
           </span>
-          <button className={styles.buyButton}>Add to Cart</button>
+          <Link href={`/${shopCategory}/${product.id}`}>
+            <button className={styles.buyButton}>Purchase</button>
+          </Link>
         </div>
       </div>
     </div>
@@ -441,20 +440,22 @@ const ShopPage = ({ params }: PageProps) => {
 
       <div className={styles.productsGrid}>
         {loading
-          ? shopInfo.products.map((product: any, index: number) => (
+          ? shopInfo.products.map((prod: any, index: number) => (
               <ProductCard
-                key={product.id}
+                key={prod.id}
                 product={{
-                  ...product,
+                  ...prod,
                 }}
                 isFirst={index === 0}
+                shopCategory={product}
               />
             ))
-          : products.map((product: any, index: number) => (
+          : products.map((prod: any, index: number) => (
               <ProductCard
-                key={product.id}
-                product={product}
+                key={prod.id}
+                product={prod}
                 isFirst={index === 0}
+                shopCategory={product}
               />
             ))}
       </div>

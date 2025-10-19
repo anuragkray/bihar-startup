@@ -21,6 +21,21 @@
     margin: 8px 0;
   }
 
+  .purchaseMessage {
+    margin-top: 16px;
+    padding: 12px;
+    background: linear-gradient(135deg, #e8f5e0 0%, #d4edc4 100%);
+    border-left: 4px solid #4A9D17;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #1A3708;
+
+    strong {
+      font-weight: 700;
+      color: #1A3708;
+    }
+  }
+
   // Tablet styles
   @media (max-width: 768px) {
     max-width: 90%;

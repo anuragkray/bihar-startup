@@ -75,6 +75,83 @@
   background: #1a3708;
 }
 
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(26, 55, 8, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Content */
+.modalContent {
+  position: relative;
+  background: linear-gradient(135deg, #e8f5e0 0%, #f0f9ec 50%, #ffffff 100%);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(74, 157, 23, 0.3);
+  border: 3px solid #4A9D17;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Close Button */
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(to right, #4A9D17, #1A3708);
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  line-height: 1;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.closeButton:hover {
+  background: linear-gradient(to right, #5BB01F, #234A0A);
+  transform: rotate(90deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 768px) {
   .item {
     width: 50%;
@@ -85,5 +162,10 @@
     background: url("/images/Dashboard_Back_Image.jpg");
     background-size: cover; /* Single image fills container */
     background-position: center;
+  }
+  
+  .modalContent {
+    max-width: 90%;
+    padding: 15px;
   }
 }
