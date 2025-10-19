@@ -7,6 +7,9 @@ const ComingSoonCard= () => {
       <h2>Coming Soon</h2>
       <p>We will soon be available in your location.</p>
       <p>Our team is actively working with the Bihar government to provide these facilities soon.</p>
+      <p className={style.purchaseMessage}>
+        <strong>Please purchase Seeds & Fertilizer as of now.</strong>
+      </p>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 .shopContainer {
   position: relative;
   padding-top: 20px;
-  height: 500px;
+  height: 600px;
   text-align: center;
   overflow: hidden;
 }
@@ -34,14 +34,20 @@
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 15px;
-  border-radius: 8px;
+  padding: 20px;
+  border-radius: 12px;
   border-style: groove;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
-  width: 20%;
-  height: 200px;
-  min-width: 150px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.15);
+  width: 30%;
+  height: 250px;
+  min-width: 250px;
   position: relative;
+}
+
+/* Special styling for Fertilizer Shop to zoom image and hide watermark */
+.fertilizerItem {
+  background-size: 120% !important; /* Zoom in to hide footer/watermark */
+  background-position: center 10% !important; /* Position to show upper portion */
 }
 
 .itemContent {
@@ -56,34 +62,118 @@
 
 .shopButton {
   margin-top: 10px;
-  padding: 8px 12px;
+  padding: 10px 16px;
   background: black;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
   text-decoration: none;
   text-align: center;
-  font-size: 14px;
-  max-width: 150px; /* Prevents button from stretching */
+  font-size: 16px;
+  max-width: 180px; /* Prevents button from stretching */
   white-space: nowrap; /* Prevents wrapping */
   overflow: hidden;
   text-overflow: ellipsis;
+  font-weight: 500;
 }
 
 .shopButton:hover {
   background: #1a3708;
 }
 
+/* Modal Overlay */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(26, 55, 8, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Modal Content */
+.modalContent {
+  position: relative;
+  background: linear-gradient(135deg, #e8f5e0 0%, #f0f9ec 50%, #ffffff 100%);
+  border-radius: 12px;
+  padding: 30px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 10px 40px rgba(74, 157, 23, 0.3);
+  border: 3px solid #4A9D17;
+  animation: slideUp 0.3s ease-in-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Close Button */
+.closeButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: linear-gradient(to right, #4A9D17, #1A3708);
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: white;
+  line-height: 1;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.closeButton:hover {
+  background: linear-gradient(to right, #5BB01F, #234A0A);
+  transform: rotate(90deg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
 @media (max-width: 768px) {
   .item {
-    width: 50%;
-    max-width: 300px;
+    width: 80%;
+    max-width: 400px;
+    height: 280px;
   }
   .shopContainer {
     height: auto;
     background: url("/images/Dashboard_Back_Image.jpg");
     background-size: cover; /* Single image fills container */
     background-position: center;
+  }
+  
+  .modalContent {
+    max-width: 90%;
+    padding: 15px;
   }
 }

@@ -1,17 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig: import("next").NextConfig = {
-  // async rewrites() {
-  //   return [
-  //     {
-  //       source: "/:path*",
-  //       destination: "http://localhost:5000/:path*",
-  //     },
-  //   ];
-  // },
+  images: {
+    remotePatterns: [
+      { 
+        protocol: "https", 
+        hostname: "res.cloudinary.com",
+        pathname: "/**"
+      },
+    ],
+  },
   async redirects() {
-    return [
-    
-    ];
+    return [];
   },
 };
 
