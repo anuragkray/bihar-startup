@@ -7,13 +7,13 @@
   padding: 20px 20px;
   min-height: 80px;
 }
+
 .link {
   text-decoration: none;
   color: inherit;
   display: flex;
   align-items: center;
 }
-
 
 .left {
   display: flex;
@@ -29,6 +29,7 @@
   display: flex;
   align-items: center;
   gap: 15px;
+  position: relative;
 }
 
 .icon {
@@ -41,6 +42,8 @@
   display: flex;
   align-items: center;
   cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .badge {
@@ -60,6 +63,86 @@
   border: 2px solid white;
 }
 
+/* User Section Styles */
+.userSection {
+  position: relative;
+}
+
+.userIconContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.userIconContainer:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.profilePhoto {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #48bb78;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  color: white;
+  border: 2px solid white;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.loginText {
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.userMenu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 0.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  min-width: 180px;
+  overflow: hidden;
+  z-index: 50;
+}
+
+.menuItem {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  background: none;
+  border: none;
+  color: #2d3748;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-decoration: none;
+}
+
+.menuItem:hover {
+  background-color: #f7fafc;
+}
+
 @media (max-width: 768px) {
   .title {
     font-size: 18px;
@@ -75,5 +158,16 @@
     font-size: 10px;
     top: -6px;
     right: -6px;
+  }
+
+  .userName,
+  .loginText {
+    display: none;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 0.875rem;
   }
 }
