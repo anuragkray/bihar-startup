@@ -3,6 +3,8 @@ import React, { useState, use, useEffect } from "react";
 import styles from "./productDetail.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@/context/UserContext";
+import { useCart } from "@/hooks/useCart";
 
 // Helper function to get image URLs from API
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -127,12 +129,17 @@ interface PageProps {
 
 const ProductDetailPage = ({ params }: PageProps) => {
   const { product, productId } = use(params);
+  const { user, isAuthenticated } = useUser();
+  const { addToCart } = useCart(user?._id?.toString() ?? null);
   const [images, setImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [quantity, setQuantity] = useState<string>("1");
   const [weightKg, setWeightKg] = useState<string>("1");
   const [weightGrams, setWeightGrams] = useState<string>("0");
+  const [weightInput, setWeightInput] = useState<string>("");
+  const [useDropdown, setUseDropdown] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const shopInfo = shopData[product];
   const productData = shopInfo?.products.find(
@@ -168,27 +175,85 @@ const ProductDetailPage = ({ params }: PageProps) => {
     }
   };
 
-  const handleAddToBag = () => {
-    const totalWeight = parseInt(weightKg) + parseInt(weightGrams) / 1000;
-    const bagItem = {
-      productId: productData.id,
-      productName: productData.name,
-      quantity: parseInt(quantity) || 1,
-      weight: totalWeight,
-      price: productData.price,
-      unit: productData.unit,
-      image: images[0] || "",
-    };
+  const handleWeightInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d.]/g, "");
+    
+    // Validate max 50 kg
+    const numValue = parseFloat(value);
+    if (value === "" || (numValue >= 0 && numValue <= 50)) {
+      setWeightInput(value);
+      // Switch to input mode when user starts typing
+      if (value !== "") {
+        setUseDropdown(false);
+      }
+    }
+  };
 
-    // Get existing bag from localStorage
-    const existingBag = JSON.parse(localStorage.getItem("shoppingBag") || "[]");
-    existingBag.push(bagItem);
-    localStorage.setItem("shoppingBag", JSON.stringify(existingBag));
+  const handleWeightKgChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setWeightKg(e.target.value);
+    setUseDropdown(true);
+    setWeightInput(""); // Clear input when dropdown is used
+  };
 
-    // Dispatch custom event to update header
-    window.dispatchEvent(new Event("bagUpdated"));
+  const handleWeightGramsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setWeightGrams(e.target.value);
+    setUseDropdown(true);
+    setWeightInput(""); // Clear input when dropdown is used
+  };
 
-    alert("Item added to bag!");
+  const handleAddToBag = async () => {
+    if (!isAuthenticated) {
+      alert("Please login to add items to cart");
+      return;
+    }
+
+    // Calculate weight in kg
+    let totalWeight: number | undefined;
+    if (useDropdown) {
+      // Using dropdown: convert kg and grams to total kg
+      const kg = parseFloat(weightKg) || 0;
+      const grams = parseFloat(weightGrams) || 0;
+      totalWeight = kg + (grams / 1000);
+    } else if (weightInput) {
+      // Using manual input
+      totalWeight = parseFloat(weightInput);
+    }
+
+    // Validate weight
+    if (totalWeight && totalWeight > 50) {
+      alert("Weight cannot exceed 50 kg");
+      return;
+    }
+    
+    setAddingToCart(true);
+    try {
+      const success = await addToCart({
+        productId: productData.id.toString(),
+        productName: productData.name,
+        quantity: parseInt(quantity) || 1,
+        price: productData.price,
+        weight: totalWeight,
+      });
+
+      if (success) {
+        // Dispatch custom event to update header
+        window.dispatchEvent(new Event("bagUpdated"));
+        alert("Item added to cart!");
+        
+        // Reset weight inputs after successful add
+        setWeightInput("");
+        setWeightKg("1");
+        setWeightGrams("0");
+        setUseDropdown(true);
+      } else {
+        alert("Failed to add item to cart. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("An error occurred. Please try again.");
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   const nextImage = () => {
@@ -310,12 +375,29 @@ const ProductDetailPage = ({ params }: PageProps) => {
 
               <div className={styles.weightSection}>
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightKg">Weight (kg)</label>
+                  <label htmlFor="weightInput">Weight (kg) - Manual Input</label>
+                  <input
+                    type="text"
+                    id="weightInput"
+                    value={weightInput}
+                    onChange={handleWeightInputChange}
+                    className={styles.quantityInput}
+                    placeholder="Enter weight (max 50 kg)"
+                    disabled={useDropdown && (weightKg !== "1" || weightGrams !== "0")}
+                  />
+                  <small style={{ color: '#666', fontSize: '12px' }}>Max 50 kg allowed</small>
+                </div>
+
+                <div style={{ textAlign: 'center', margin: '10px 0', color: '#666' }}>OR</div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="weightKg">Weight (kg) - Dropdown</label>
                   <select
                     id="weightKg"
                     value={weightKg}
-                    onChange={(e) => setWeightKg(e.target.value)}
+                    onChange={handleWeightKgChange}
                     className={styles.weightSelect}
+                    disabled={!useDropdown && weightInput !== ""}
                   >
                     {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
                       <option key={kg} value={kg}>
@@ -326,12 +408,13 @@ const ProductDetailPage = ({ params }: PageProps) => {
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightGrams">Weight (grams)</label>
+                  <label htmlFor="weightGrams">Weight (grams) - Dropdown</label>
                   <select
                     id="weightGrams"
                     value={weightGrams}
-                    onChange={(e) => setWeightGrams(e.target.value)}
+                    onChange={handleWeightGramsChange}
                     className={styles.weightSelect}
+                    disabled={!useDropdown && weightInput !== ""}
                   >
                     <option value="0">0 g</option>
                     {Array.from({ length: 9 }, (_, i) => (i + 1) * 100).map(
@@ -345,8 +428,16 @@ const ProductDetailPage = ({ params }: PageProps) => {
                 </div>
               </div>
 
-              <button className={styles.addToBagButton} onClick={handleAddToBag}>
-                Add to Bag
+              <button 
+                className={styles.addToBagButton} 
+                onClick={handleAddToBag}
+                disabled={addingToCart || !isAuthenticated}
+              >
+                {addingToCart 
+                  ? "Adding..." 
+                  : !isAuthenticated 
+                  ? "Login to Add to Cart" 
+                  : "Add to Bag"}
               </button>
             </div>
           </div>

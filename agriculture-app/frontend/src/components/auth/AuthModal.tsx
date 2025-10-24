@@ -57,8 +57,12 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
       });
 
       if (newUser) {
-        login(newUser);
-        onClose();
+        try {
+          await login(newUser);
+          onClose();
+        } catch (err) {
+          setError('Login failed after registration. Please try logging in manually.');
+        }
       } else {
         setError('Registration failed. Email or phone may already exist.');
       }
@@ -71,7 +75,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
         const data = await response.json();
 
         if (data.success && data.data.length > 0) {
-          login(data.data[0]);
+          await login(data.data[0]);
           onClose();
         } else {
           setError('User not found. Please register first.');

@@ -113,6 +113,11 @@ export default function CartPage() {
               <div className={styles.itemInfo}>
                 <h3 className={styles.itemName}>{item.productName}</h3>
                 <p className={styles.itemPrice}>₹{item.price.toLocaleString()}</p>
+                {item.weight && (
+                  <p className={styles.itemWeight}>
+                    Weight: {item.weight} kg
+                  </p>
+                )}
                 <p className={styles.itemAdded}>
                   Added: {new Date(item.addedAt).toLocaleDateString()}
                 </p>

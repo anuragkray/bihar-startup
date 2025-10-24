@@ -16,6 +16,7 @@ export interface ICartItem {
   productName: string;
   quantity: number;
   price: number;
+  weight?: number; // Weight in kg (optional)
   addedAt: Date;
 }
 
@@ -100,6 +101,7 @@ export interface AddToCartRequest {
   productName: string;
   quantity: number;
   price: number;
+  weight?: number; // Weight in kg (optional)
 }
 
 export interface UpdateCartItemRequest {

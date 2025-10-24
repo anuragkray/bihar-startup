@@ -11,15 +11,21 @@ const Header = () => {
   const [bagCount, setBagCount] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
-  const { user, isAuthenticated, logout } = useUser();
+  const { user, isAuthenticated, loading, logout } = useUser();
 
   useEffect(() => {
-    // Update bag count on mount
-    updateBagCount();
+    // Fetch cart count from API if user is authenticated
+    if (isAuthenticated && user?._id) {
+      fetchCartCount();
+    } else {
+      setBagCount(0);
+    }
 
     // Listen for bag updates
     const handleBagUpdate = () => {
-      updateBagCount();
+      if (isAuthenticated && user?._id) {
+        fetchCartCount();
+      }
     };
 
     window.addEventListener("bagUpdated", handleBagUpdate);
@@ -27,11 +33,21 @@ const Header = () => {
     return () => {
       window.removeEventListener("bagUpdated", handleBagUpdate);
     };
-  }, []);
+  }, [isAuthenticated, user?._id]);
 
-  const updateBagCount = () => {
-    const bag = JSON.parse(localStorage.getItem("shoppingBag") || "[]");
-    setBagCount(bag.length);
+  const fetchCartCount = async () => {
+    if (!user?._id) return;
+    
+    try {
+      const response = await fetch(`/api/users/cart/${user._id}`);
+      const data = await response.json();
+      
+      if (data.success && data.data) {
+        setBagCount(data.data.itemCount || 0);
+      }
+    } catch (error) {
+      console.error('Error fetching cart count:', error);
+    }
   };
 
   const handleUserIconClick = () => {
@@ -42,9 +58,10 @@ const Header = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     setShowUserMenu(false);
+    setBagCount(0);
   };
 
   // Get user initials for avatar

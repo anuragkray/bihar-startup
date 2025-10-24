@@ -61,6 +61,11 @@ const CartItemSchema = new Schema<ICartItem>(
       required: true,
       min: 0,
     },
+    weight: {
+      type: Number,
+      min: 0,
+      max: 50,
+    },
     addedAt: {
       type: Date,
       default: Date.now,
