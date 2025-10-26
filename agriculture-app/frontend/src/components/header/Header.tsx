@@ -6,11 +6,13 @@ import { FaBars, FaShoppingCart, FaUserCircle } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useUser } from "@/context/UserContext";
 import AuthModal from "@/components/auth/AuthModal";
+import MobileSidebar from "@/components/mobile-sidebar/MobileSidebar";
 
 const Header = () => {
   const [bagCount, setBagCount] = useState(0);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, isAuthenticated, loading, logout } = useUser();
 
   useEffect(() => {
@@ -78,9 +80,13 @@ const Header = () => {
     <>
       <header className={styles.header}>
         <div className={styles.left}>
-          <Link href="/km-agri-dashboard" className={styles.link}>
+          <button 
+            className={styles.hamburgerButton}
+            onClick={() => setIsSidebarOpen(true)}
+            aria-label="Open menu"
+          >
             <FaBars className={styles.icon} />
-          </Link>
+          </button>
           <Link href="/km-agri-dashboard" className={styles.link}>
             <h1 className={styles.title}>KM Agri</h1>
           </Link>
@@ -139,6 +145,7 @@ const Header = () => {
         </div>
       </header>
 
+      <MobileSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </>
   );

@@ -18,11 +18,29 @@
 .left {
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+.hamburgerButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 5px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  border-radius: 4px;
+}
+
+.hamburgerButton:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .title {
-  margin-left: 10px;
   font-size: 20px;
+  margin: 0;
 }
 
 .right {
@@ -144,6 +162,10 @@
 }
 
 @media (max-width: 768px) {
+  .hamburgerButton {
+    display: flex;
+  }
+
   .title {
     font-size: 18px;
   }
