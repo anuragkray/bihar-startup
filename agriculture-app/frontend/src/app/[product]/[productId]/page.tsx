@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@/context/UserContext";
 import { useCart } from "@/hooks/useCart";
+import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 
 // Helper function to get image URLs from API
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -31,14 +32,15 @@ const shopData: Record<string, any> = {
         price: 2680,
         unit: "Quintal",
         image: "",
-        description: "Premium quality wheat seeds with high yield. These seeds are specially selected for their superior germination rate and disease resistance. Ideal for all soil types and climatic conditions.",
+        description:
+          "Premium quality wheat seeds with high yield. These seeds are specially selected for their superior germination rate and disease resistance. Ideal for all soil types and climatic conditions.",
         features: [
           "High germination rate (>95%)",
           "Disease resistant variety",
           "Suitable for all soil types",
           "Excellent yield potential",
-          "Certified quality seeds"
-        ]
+          "Certified quality seeds",
+        ],
       },
       {
         id: 2,
@@ -46,14 +48,15 @@ const shopData: Record<string, any> = {
         price: 2300,
         unit: "Quintal",
         image: "",
-        description: "Hybrid rice seeds for better production with enhanced grain quality and pest resistance.",
+        description:
+          "Hybrid rice seeds for better production with enhanced grain quality and pest resistance.",
         features: [
           "Hybrid variety",
           "High yield potential",
           "Pest resistant",
           "Good grain quality",
-          "Suitable for wet cultivation"
-        ]
+          "Suitable for wet cultivation",
+        ],
       },
       {
         id: 3,
@@ -61,14 +64,15 @@ const shopData: Record<string, any> = {
         price: 450,
         unit: "kg",
         image: "",
-        description: "Disease-resistant corn seeds with excellent yield and quality.",
+        description:
+          "Disease-resistant corn seeds with excellent yield and quality.",
         features: [
           "Disease resistant",
           "High yield",
           "Good grain quality",
           "Drought tolerant",
-          "Fast growing variety"
-        ]
+          "Fast growing variety",
+        ],
       },
       {
         id: 4,
@@ -76,14 +80,15 @@ const shopData: Record<string, any> = {
         price: 300,
         unit: "pack",
         image: "",
-        description: "Premium sugarcane seeds for high sugar content and better yield.",
+        description:
+          "Premium sugarcane seeds for high sugar content and better yield.",
         features: [
           "High sugar content",
           "Disease resistant",
           "Good tillering",
           "Suitable for all regions",
-          "Long harvesting period"
-        ]
+          "Long harvesting period",
+        ],
       },
       {
         id: 5,
@@ -91,14 +96,15 @@ const shopData: Record<string, any> = {
         price: 400,
         unit: "kg",
         image: "",
-        description: "High oil content mustard seeds for commercial cultivation.",
+        description:
+          "High oil content mustard seeds for commercial cultivation.",
         features: [
           "High oil content",
           "Disease resistant",
           "Good yield",
           "Suitable for winter season",
-          "Premium quality"
-        ]
+          "Premium quality",
+        ],
       },
       {
         id: 6,
@@ -112,8 +118,8 @@ const shopData: Record<string, any> = {
           "High nutritional value",
           "Good yield",
           "Suitable for dry regions",
-          "Fast growing"
-        ]
+          "Fast growing",
+        ],
       },
     ],
   },
@@ -133,8 +139,8 @@ const ProductDetailPage = ({ params }: PageProps) => {
   const { addToCart } = useCart(user?._id?.toString() ?? null);
   const [images, setImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [weightKg, setWeightKg] = useState<string>("1");
-  const [weightGrams, setWeightGrams] = useState<string>("0");
+  const [weightKg, setWeightKg] = useState<string>("");
+  const [weightGrams, setWeightGrams] = useState<string>("");
   const [weightInput, setWeightInput] = useState<string>("");
   const [useDropdown, setUseDropdown] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
@@ -234,8 +240,8 @@ const ProductDetailPage = ({ params }: PageProps) => {
 
         // Reset weight inputs after successful add
         setWeightInput("");
-        setWeightKg("1");
-        setWeightGrams("0");
+        setWeightKg("");
+        setWeightGrams("");
         setUseDropdown(true);
       } else {
         alert("Failed to add item to cart. Please try again.");
@@ -256,12 +262,25 @@ const ProductDetailPage = ({ params }: PageProps) => {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  // Helper function to format shop name for breadcrumb
+  const formatShopName = (slug: string) => {
+    return slug
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: "Home", href: "/km-agri-dashboard" },
+    { label: formatShopName(product), href: `/${product}` },
+    { label: productData.name, href: `/${product}/${productId}` },
+  ];
+
   return (
     <div className={styles.detailPage}>
       <div className={styles.container}>
-        <Link href={`/${product}`} className={styles.backLink}>
-          ← Back to {shopInfo.title}
-        </Link>
+        <Breadcrumb items={breadcrumbItems} />
 
         <div className={styles.productDetailContainer}>
           {/* Left Side - Image Carousel */}
@@ -355,35 +374,35 @@ const ProductDetailPage = ({ params }: PageProps) => {
 
             {/* Weight Selection */}
             <div className={styles.selectionSection}>
+              <div className={styles.inputGroup}>
+                <label htmlFor="weightInput">Please Enter Weight (kg)</label>
+                <input
+                  type="text"
+                  id="weightInput"
+                  value={weightInput}
+                  onChange={handleWeightInputChange}
+                  className={styles.quantityInput}
+                  placeholder="Enter weight (max 50 kg)"
+                  disabled={
+                    useDropdown && (weightKg !== "" || weightGrams !== "")
+                  }
+                />
+                <small style={{ color: "#666", fontSize: "12px" }}>
+                  Max 50 kg allowed
+                </small>
+              </div>
+
+              <div
+                style={{
+                  textAlign: "center",
+                  margin: "10px 0",
+                  color: "#666",
+                }}
+              >
+                OR
+              </div>
+
               <div className={styles.weightSection}>
-                <div className={styles.inputGroup}>
-                  <label htmlFor="weightInput">Pleas Enter Weight (kg)</label>
-                  <input
-                    type="text"
-                    id="weightInput"
-                    value={weightInput}
-                    onChange={handleWeightInputChange}
-                    className={styles.quantityInput}
-                    placeholder="Enter weight (max 50 kg)"
-                    disabled={
-                      useDropdown && (weightKg !== "1" || weightGrams !== "0")
-                    }
-                  />
-                  <small style={{ color: "#666", fontSize: "12px" }}>
-                    Max 50 kg allowed
-                  </small>
-                </div>
-
-                <div
-                  style={{
-                    textAlign: "center",
-                    margin: "10px 0",
-                    color: "#666",
-                  }}
-                >
-                  OR
-                </div>
-
                 <div className={styles.inputGroup}>
                   <label htmlFor="weightKg">Select Weight (kg)</label>
                   <select
@@ -393,6 +412,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                     className={styles.weightSelect}
                     disabled={!useDropdown && weightInput !== ""}
                   >
+                    <option value="">Please select from here</option>
                     {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
                       <option key={kg} value={kg}>
                         {kg} kg
@@ -402,7 +422,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightGrams">Select Weight</label>
+                  <label htmlFor="weightGrams">Select Weight (grams)</label>
                   <select
                     id="weightGrams"
                     value={weightGrams}
@@ -410,6 +430,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                     className={styles.weightSelect}
                     disabled={!useDropdown && weightInput !== ""}
                   >
+                    <option value="">Please select from here</option>
                     <option value="0">0 g</option>
                     {Array.from({ length: 9 }, (_, i) => (i + 1) * 100).map(
                       (grams) => (

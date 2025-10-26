@@ -14,7 +14,7 @@
   display: inline-block;
   margin-bottom: 20px;
   padding: 10px 20px;
-  background: #2d5016;
+  background: black;
   color: white;
   text-decoration: none;
   border-radius: 6px;
@@ -276,26 +276,31 @@
   border-color: #2d5016;
 }
 
+.weightSelect option:first-child {
+  font-weight: 300;
+  color: #999;
+}
+
 .addToBagButton {
   width: 100%;
   padding: 15px;
-  background: #2d5016;
+  background: black;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 1.2rem;
-  font-weight: 600;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
+  transition: background 0.3s ease;
 }
 
 .addToBagButton:hover {
   background: #1a3708;
-  transform: translateY(-2px);
 }
 
-.addToBagButton:active {
-  transform: translateY(0);
+.addToBagButton:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* Error Container */
@@ -316,11 +321,11 @@
 
 .backButton {
   padding: 12px 30px;
-  background: #2d5016;
+  background: black;
   color: white;
   text-decoration: none;
-  border-radius: 8px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-weight: 500;
   transition: background 0.3s ease;
 }
 

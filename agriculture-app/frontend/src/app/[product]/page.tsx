@@ -3,6 +3,7 @@ import React, { useState, use, useEffect } from "react";
 import styles from "./shop.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 
 // Helper function to get image URLs from API (returns array of images)
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -406,14 +407,29 @@ const ShopPage = ({ params }: PageProps) => {
     );
   }
 
+  // Helper function to format shop name for breadcrumb
+  const formatShopName = (slug: string) => {
+    return slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', href: '/km-agri-dashboard' },
+    { label: formatShopName(product), href: `/${product}` },
+  ];
+
   return (
     <div className={styles.shopPage}>
-      <div className={styles.shopHeader}>
-        <Link href="/km-agri-dashboard" className={styles.backLink}>
-          ← Back to Dashboard
-        </Link>
-        <h1 className={styles.shopTitle}>{shopInfo.title}</h1>
-        <p className={styles.shopDescription}>{shopInfo.description}</p>
+      <div className={styles.shopContainer}>
+        <Breadcrumb items={breadcrumbItems} />
+        
+        <div className={styles.shopHeader}>
+          <h1 className={styles.shopTitle}>{shopInfo.title}</h1>
+          <p className={styles.shopDescription}>{shopInfo.description}</p>
+        </div>
       </div>
 
       <div className={styles.productsGrid}>

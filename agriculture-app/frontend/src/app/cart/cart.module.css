@@ -215,19 +215,19 @@
 .checkoutButton {
   width: 100%;
   padding: 1rem;
-  background-color: #48bb78;
+  background-color: black;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   font-size: 1.125rem;
-  font-weight: 700;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
   margin-bottom: 1rem;
 }
 
 .checkoutButton:hover {
-  background-color: #38a169;
+  background-color: #1a3708;
 }
 
 .continueShoppingLink {
@@ -268,16 +268,16 @@
 .shopButton {
   display: inline-block;
   padding: 0.875rem 2rem;
-  background-color: #48bb78;
+  background-color: black;
   color: white;
-  border-radius: 8px;
-  font-weight: 700;
+  border-radius: 6px;
+  font-weight: 500;
   text-decoration: none;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s;
 }
 
 .shopButton:hover {
-  background-color: #38a169;
+  background-color: #1a3708;
 }
 
 .authRequired {
