@@ -1,15 +1,15 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
 import { useCart } from '@/hooks/useCart';
-import AuthModal from '@/components/auth/AuthModal';
 import Link from 'next/link';
 import styles from './cart.module.css';
 
 export default function CartPage() {
-  const { user, isAuthenticated } = useUser();
-  const [showAuthModal, setShowAuthModal] = useState(false);
+  const router = useRouter();
+  const { user, isAuthenticated, loading: userLoading } = useUser();
   const {
     cart,
     itemCount,
@@ -19,14 +19,14 @@ export default function CartPage() {
     updateCartItem,
     removeFromCart,
     clearCart,
-  } = useCart(user?._id as string | null);
+  } = useCart(user?._id?.toString() ?? null);
 
   useEffect(() => {
-    // If user is not authenticated, show auth modal
-    if (!isAuthenticated) {
-      setShowAuthModal(true);
+    // Redirect to dashboard if user is not authenticated
+    if (!isAuthenticated && !userLoading) {
+      router.push('/km-agri-dashboard');
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, userLoading, router]);
 
   const handleQuantityChange = async (productId: string, newQuantity: number) => {
     if (newQuantity < 1) return;
@@ -45,28 +45,6 @@ export default function CartPage() {
     }
   };
 
-  // Show auth modal if not authenticated
-  if (!isAuthenticated) {
-    return (
-      <>
-        <div className={styles.authRequired}>
-          <div className={styles.authCard}>
-            <h2>Login Required</h2>
-            <p>Please login or register to view your cart and place orders.</p>
-            <button onClick={() => setShowAuthModal(true)} className={styles.loginButton}>
-              Login / Register
-            </button>
-          </div>
-        </div>
-        <AuthModal
-          isOpen={showAuthModal}
-          onClose={() => setShowAuthModal(false)}
-          mode="login"
-        />
-      </>
-    );
-  }
-
   if (loading) {
     return (
       <div className={styles.container}>
@@ -83,6 +61,12 @@ export default function CartPage() {
     );
   }
 
+  // Don't render anything if not authenticated (will redirect)
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  // Show empty cart message
   if (cart.length === 0) {
     return (
       <div className={styles.container}>
@@ -98,7 +82,8 @@ export default function CartPage() {
   }
 
   return (
-    <div className={styles.container}>
+    <>
+      <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Shopping Cart ({itemCount} items)</h1>
         <button onClick={handleClearCart} className={styles.clearButton}>
@@ -191,6 +176,7 @@ export default function CartPage() {
           </Link>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

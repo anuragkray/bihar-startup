@@ -133,7 +133,6 @@ const ProductDetailPage = ({ params }: PageProps) => {
   const { addToCart } = useCart(user?._id?.toString() ?? null);
   const [images, setImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState<string>("1");
   const [weightKg, setWeightKg] = useState<string>("1");
   const [weightGrams, setWeightGrams] = useState<string>("0");
   const [weightInput, setWeightInput] = useState<string>("");
@@ -168,16 +167,9 @@ const ProductDetailPage = ({ params }: PageProps) => {
     );
   }
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value === "" || parseInt(value) > 0) {
-      setQuantity(value);
-    }
-  };
-
   const handleWeightInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/[^\d.]/g, "");
-    
+
     // Validate max 50 kg
     const numValue = parseFloat(value);
     if (value === "" || (numValue >= 0 && numValue <= 50)) {
@@ -213,7 +205,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
       // Using dropdown: convert kg and grams to total kg
       const kg = parseFloat(weightKg) || 0;
       const grams = parseFloat(weightGrams) || 0;
-      totalWeight = kg + (grams / 1000);
+      totalWeight = kg + grams / 1000;
     } else if (weightInput) {
       // Using manual input
       totalWeight = parseFloat(weightInput);
@@ -224,13 +216,13 @@ const ProductDetailPage = ({ params }: PageProps) => {
       alert("Weight cannot exceed 50 kg");
       return;
     }
-    
+
     setAddingToCart(true);
     try {
       const success = await addToCart({
         productId: productData.id.toString(),
         productName: productData.name,
-        quantity: parseInt(quantity) || 1,
+        quantity: 1,
         price: productData.price,
         weight: totalWeight,
       });
@@ -239,7 +231,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
         // Dispatch custom event to update header
         window.dispatchEvent(new Event("bagUpdated"));
         alert("Item added to cart!");
-        
+
         // Reset weight inputs after successful add
         setWeightInput("");
         setWeightKg("1");
@@ -352,30 +344,20 @@ const ProductDetailPage = ({ params }: PageProps) => {
               <div className={styles.features}>
                 <h3>Key Features</h3>
                 <ul>
-                  {productData.features.map((feature: string, index: number) => (
-                    <li key={index}>{feature}</li>
-                  ))}
+                  {productData.features.map(
+                    (feature: string, index: number) => (
+                      <li key={index}>{feature}</li>
+                    )
+                  )}
                 </ul>
               </div>
             )}
 
-            {/* Quantity and Weight Selection */}
+            {/* Weight Selection */}
             <div className={styles.selectionSection}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="quantity">Quantity</label>
-                <input
-                  type="text"
-                  id="quantity"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  className={styles.quantityInput}
-                  placeholder="Enter quantity"
-                />
-              </div>
-
               <div className={styles.weightSection}>
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightInput">Weight (kg) - Manual Input</label>
+                  <label htmlFor="weightInput">Pleas Enter Weight (kg)</label>
                   <input
                     type="text"
                     id="weightInput"
@@ -383,15 +365,27 @@ const ProductDetailPage = ({ params }: PageProps) => {
                     onChange={handleWeightInputChange}
                     className={styles.quantityInput}
                     placeholder="Enter weight (max 50 kg)"
-                    disabled={useDropdown && (weightKg !== "1" || weightGrams !== "0")}
+                    disabled={
+                      useDropdown && (weightKg !== "1" || weightGrams !== "0")
+                    }
                   />
-                  <small style={{ color: '#666', fontSize: '12px' }}>Max 50 kg allowed</small>
+                  <small style={{ color: "#666", fontSize: "12px" }}>
+                    Max 50 kg allowed
+                  </small>
                 </div>
 
-                <div style={{ textAlign: 'center', margin: '10px 0', color: '#666' }}>OR</div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    margin: "10px 0",
+                    color: "#666",
+                  }}
+                >
+                  OR
+                </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightKg">Weight (kg) - Dropdown</label>
+                  <label htmlFor="weightKg">Select Weight (kg)</label>
                   <select
                     id="weightKg"
                     value={weightKg}
@@ -408,7 +402,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightGrams">Weight (grams) - Dropdown</label>
+                  <label htmlFor="weightGrams">Select Weight</label>
                   <select
                     id="weightGrams"
                     value={weightGrams}
@@ -428,15 +422,15 @@ const ProductDetailPage = ({ params }: PageProps) => {
                 </div>
               </div>
 
-              <button 
-                className={styles.addToBagButton} 
+              <button
+                className={styles.addToBagButton}
                 onClick={handleAddToBag}
                 disabled={addingToCart || !isAuthenticated}
               >
-                {addingToCart 
-                  ? "Adding..." 
-                  : !isAuthenticated 
-                  ? "Login to Add to Cart" 
+                {addingToCart
+                  ? "Adding..."
+                  : !isAuthenticated
+                  ? "Login to Add to Cart"
                   : "Add to Bag"}
               </button>
             </div>

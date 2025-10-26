@@ -86,10 +86,16 @@ const Header = () => {
           </Link>
         </div>
         <div className={styles.right}>
-          <Link href="/cart" className={styles.cartContainer}>
-            <FaShoppingCart className={styles.icon} />
-            {bagCount > 0 && <span className={styles.badge}>{bagCount}</span>}
-          </Link>
+          {isAuthenticated ? (
+            <Link href="/cart" className={styles.cartContainer}>
+              <FaShoppingCart className={styles.icon} />
+              {bagCount > 0 && <span className={styles.badge}>{bagCount}</span>}
+            </Link>
+          ) : (
+            <div className={styles.cartContainer} onClick={() => setShowAuthModal(true)} style={{ cursor: 'pointer' }}>
+              <FaShoppingCart className={styles.icon} />
+            </div>
+          )}
 
           <div className={styles.userSection}>
             <div className={styles.userIconContainer} onClick={handleUserIconClick}>
