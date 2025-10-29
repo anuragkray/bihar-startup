@@ -29,7 +29,7 @@ const shopData: Record<string, any> = {
       {
         id: 1,
         name: "Wheat Seeds",
-        price: 2680,
+        price: 26.8,
         unit: "Quintal",
         image: "",
         description:
@@ -45,7 +45,7 @@ const shopData: Record<string, any> = {
       {
         id: 2,
         name: "Paddy Seeds",
-        price: 2300,
+        price: 23.0,
         unit: "Quintal",
         image: "",
         description:
@@ -61,7 +61,7 @@ const shopData: Record<string, any> = {
       {
         id: 3,
         name: "Corn Seeds",
-        price: 450,
+        price: 26,
         unit: "kg",
         image: "",
         description:
@@ -77,7 +77,7 @@ const shopData: Record<string, any> = {
       {
         id: 4,
         name: "Sugarcane",
-        price: 300,
+        price: 2.5,
         unit: "pack",
         image: "",
         description:
@@ -93,7 +93,7 @@ const shopData: Record<string, any> = {
       {
         id: 5,
         name: "Mustard Seeds",
-        price: 400,
+        price: 60,
         unit: "kg",
         image: "",
         description:
@@ -109,7 +109,7 @@ const shopData: Record<string, any> = {
       {
         id: 6,
         name: "Pearl Millet Seeds",
-        price: 550,
+        price: 120,
         unit: "kg",
         image: "",
         description: "Drought-resistant pearl millet seeds for dry regions.",
@@ -123,7 +123,43 @@ const shopData: Record<string, any> = {
       },
     ],
   },
-  // Add other categories as needed
+  "fertilizer-shop": {
+    title: "Fertilizer Shop",
+    products: [
+      {
+        id: 1,
+        name: "Urea",
+        price: 600,
+        unit: "bag",
+        image: "",
+        description:
+          "High nitrogen content fertilizer for enhanced crop growth. Urea is the most widely used nitrogen fertilizer, providing essential nutrients for plant development and increased yield.",
+        features: [
+          "46% nitrogen content",
+          "Quick release formula",
+          "Suitable for all crops",
+          "Increases crop yield",
+          "Cost-effective solution",
+        ],
+      },
+      {
+        id: 2,
+        name: "Potash",
+        price: 900,
+        unit: "bag",
+        image: "",
+        description:
+          "Potassium-rich fertilizer for improved crop quality and disease resistance. Essential for fruit development, root growth, and overall plant health.",
+        features: [
+          "High potassium content",
+          "Improves fruit quality",
+          "Enhances disease resistance",
+          "Strengthens plant stems",
+          "Increases water efficiency",
+        ],
+      },
+    ],
+  },
 };
 
 interface PageProps {
@@ -412,7 +448,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                     className={styles.weightSelect}
                     disabled={!useDropdown && weightInput !== ""}
                   >
-                    <option value="">Please select from here</option>
+                    <option value="">Please select weight (Kg)</option>
                     {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
                       <option key={kg} value={kg}>
                         {kg} kg
@@ -430,7 +466,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                     className={styles.weightSelect}
                     disabled={!useDropdown && weightInput !== ""}
                   >
-                    <option value="">Please select from here</option>
+                    <option value="">Please select weight (gram)</option>
                     <option value="0">0 g</option>
                     {Array.from({ length: 9 }, (_, i) => (i + 1) * 100).map(
                       (grams) => (
