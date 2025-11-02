@@ -17,6 +17,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
     name: '',
     email: '',
     phone: '',
+    password: '',
     street: '',
     city: '',
     state: 'Bihar',
@@ -30,47 +31,54 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
-    if (currentMode === 'register') {
-      // Validate required fields
-      if (!formData.name || !formData.email || !formData.phone) {
-        setError('Please fill in all required fields');
-        return;
-      }
+    if (currentMode === "register") {
+      // Show alert that registration is not allowed
+      alert(
+        "We are not allowing new registration right now. Please keep in touch."
+      );
+      return;
+      // // Validate required fields
+      // if (!formData.name || !formData.email || !formData.phone) {
+      //   setError('Please fill in all required fields');
+      //   return;
+      // }
 
-      // Create user
-      const newUser = await createUser({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        address: formData.street
-          ? {
-              type: 'home',
-              street: formData.street,
-              city: formData.city,
-              state: formData.state,
-              pincode: formData.pincode,
-              isDefault: true,
-            }
-          : undefined,
-      });
+      // // Create user
+      // const newUser = await createUser({
+      //   name: formData.name,
+      //   email: formData.email,
+      //   phone: formData.phone,
+      //   address: formData.street
+      //     ? {
+      //         type: 'home',
+      //         street: formData.street,
+      //         city: formData.city,
+      //         state: formData.state,
+      //         pincode: formData.pincode,
+      //         isDefault: true,
+      //       }
+      //     : undefined,
+      // });
 
-      if (newUser) {
-        try {
-          await login(newUser);
-          onClose();
-        } catch (err) {
-          setError('Login failed after registration. Please try logging in manually.');
-        }
-      } else {
-        setError('Registration failed. Email or phone may already exist.');
-      }
+      // if (newUser) {
+      //   try {
+      //     await login(newUser);
+      //     onClose();
+      //   } catch (err) {
+      //     setError('Login failed after registration. Please try logging in manually.');
+      //   }
+      // } else {
+      //   setError('Registration failed. Email or phone may already exist.');
+      // }
     } else {
       // Login - find user by email or phone
       try {
         const response = await fetch(
-          `/api/users?search=${encodeURIComponent(formData.email || formData.phone)}&limit=1`
+          `/api/users?search=${encodeURIComponent(
+            formData.email || formData.phone
+          )}&limit=1`
         );
         const data = await response.json();
 
@@ -78,10 +86,10 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
           await login(data.data[0]);
           onClose();
         } else {
-          setError('User not found. Please register first.');
+          setError("User not found. Please register first.");
         }
       } catch (err) {
-        setError('Login failed. Please try again.');
+        setError("Login failed. Please try again.");
       }
     }
   };
@@ -101,18 +109,18 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
         </button>
 
         <h2 className={styles.title}>
-          {currentMode === 'login' ? 'Welcome Back!' : 'Create Account'}
+          {currentMode === "login" ? "Welcome Back!" : "Create Account"}
         </h2>
         <p className={styles.subtitle}>
-          {currentMode === 'login'
-            ? 'Login to access your cart and orders'
-            : 'Register to start shopping'}
+          {currentMode === "login"
+            ? "Login to access your cart and orders"
+            : "Register to start shopping"}
         </p>
 
         {error && <div className={styles.error}>{error}</div>}
 
         <form onSubmit={handleSubmit} className={styles.form}>
-          {currentMode === 'register' && (
+          {currentMode === "register" && (
             <div className={styles.formGroup}>
               <label htmlFor="name">Full Name *</label>
               <input
@@ -140,21 +148,38 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label htmlFor="phone">Phone Number *</label>
-            <input
-              type="tel"
-              id="phone"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="10-digit mobile number"
-              pattern="[0-9]{10}"
-              required
-            />
-          </div>
+          {currentMode === "register" && (
+            <div className={styles.formGroup}>
+              <label htmlFor="phone">Phone Number *</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="10-digit mobile number"
+                pattern="[0-9]{10}"
+                required
+              />
+            </div>
+          )}
 
-          {currentMode === 'register' && (
+          {currentMode === "login" && (
+            <div className={styles.formGroup}>
+              <label htmlFor="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+          )}
+
+          {currentMode === "register" && (
             <>
               <div className={styles.formGroup}>
                 <label htmlFor="street">Street Address</label>
@@ -197,32 +222,36 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
             </>
           )}
 
-          <button type="submit" className={styles.submitButton} disabled={loading}>
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={loading}
+          >
             {loading
-              ? 'Please wait...'
-              : currentMode === 'login'
-              ? 'Login'
-              : 'Create Account'}
+              ? "Please wait..."
+              : currentMode === "login"
+              ? "Login"
+              : "Create Account"}
           </button>
         </form>
 
         <div className={styles.switchMode}>
-          {currentMode === 'login' ? (
+          {currentMode === "login" ? (
             <p>
-              Don't have an account?{' '}
-              <button onClick={() => setCurrentMode('register')}>Register here</button>
+              Don't have an account?{" "}
+              <button onClick={() => setCurrentMode("register")}>
+                Register here
+              </button>
             </p>
           ) : (
             <p>
-              Already have an account?{' '}
-              <button onClick={() => setCurrentMode('login')}>Login here</button>
+              Already have an account?{" "}
+              <button onClick={() => setCurrentMode("login")}>
+                Login here
+              </button>
             </p>
           )}
         </div>
-
-        <p className={styles.note}>
-          Note: In future, we'll add mobile OTP verification for enhanced security.
-        </p>
       </div>
     </div>
   );

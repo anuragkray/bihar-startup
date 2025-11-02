@@ -30,7 +30,7 @@ const shopData: Record<string, any> = {
         id: 1,
         name: "Wheat Seeds",
         price: 26.8,
-        unit: "Quintal",
+        unit: "Kg",
         image: "",
         description:
           "Premium quality wheat seeds with high yield. These seeds are specially selected for their superior germination rate and disease resistance. Ideal for all soil types and climatic conditions.",
@@ -46,7 +46,7 @@ const shopData: Record<string, any> = {
         id: 2,
         name: "Paddy Seeds",
         price: 23.0,
-        unit: "Quintal",
+        unit: "Kg",
         image: "",
         description:
           "Hybrid rice seeds for better production with enhanced grain quality and pest resistance.",
@@ -438,7 +438,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
                 OR
               </div>
 
-              <div className={styles.weightSection}>
+              <div className={styles.selectionSection}>
                 <div className={styles.inputGroup}>
                   <label htmlFor="weightKg">Select Weight (kg)</label>
                   <select
@@ -454,27 +454,6 @@ const ProductDetailPage = ({ params }: PageProps) => {
                         {kg} kg
                       </option>
                     ))}
-                  </select>
-                </div>
-
-                <div className={styles.inputGroup}>
-                  <label htmlFor="weightGrams">Select Weight (grams)</label>
-                  <select
-                    id="weightGrams"
-                    value={weightGrams}
-                    onChange={handleWeightGramsChange}
-                    className={styles.weightSelect}
-                    disabled={!useDropdown && weightInput !== ""}
-                  >
-                    <option value="">Please select weight (gram)</option>
-                    <option value="0">0 g</option>
-                    {Array.from({ length: 9 }, (_, i) => (i + 1) * 100).map(
-                      (grams) => (
-                        <option key={grams} value={grams}>
-                          {grams} g
-                        </option>
-                      )
-                    )}
                   </select>
                 </div>
               </div>
