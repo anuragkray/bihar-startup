@@ -76,9 +76,89 @@
   margin-bottom: 0.25rem;
 }
 
+.itemWeight {
+  font-size: 0.875rem;
+  color: #2d3748;
+  font-weight: 500;
+}
+
 .itemAdded {
   font-size: 0.875rem;
   color: #718096;
+}
+
+.weightSection {
+  margin: 0.5rem 0;
+}
+
+.weightDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.editButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0.25rem;
+  transition: transform 0.2s;
+}
+
+.editButton:hover {
+  transform: scale(1.2);
+}
+
+.editWeightContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.weightInput {
+  width: 100px;
+  padding: 0.5rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 0.875rem;
+}
+
+.weightInput:focus {
+  outline: none;
+  border-color: #48bb78;
+}
+
+.saveButton,
+.cancelButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.saveButton {
+  background-color: #48bb78;
+  color: white;
+}
+
+.saveButton:hover {
+  background-color: #38a169;
+}
+
+.cancelButton {
+  background-color: #fc8181;
+  color: white;
+}
+
+.cancelButton:hover {
+  background-color: #f56565;
 }
 
 .itemActions {

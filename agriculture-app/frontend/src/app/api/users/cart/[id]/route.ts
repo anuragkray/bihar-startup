@@ -33,9 +33,14 @@ export async function GET(
       return NextResponse.json(response, { status: 404 });
     }
 
-    // Calculate cart total
+    // Calculate cart total based on weight if available, otherwise quantity
     const cartTotal = user.cart.reduce(
-      (total, item) => total + item.price * item.quantity,
+      (total, item) => {
+        if (item.weight) {
+          return total + item.price * item.weight;
+        }
+        return total + item.price * item.quantity;
+      },
       0
     );
 
@@ -101,13 +106,13 @@ export async function POST(
       return NextResponse.json(response, { status: 404 });
     }
 
-    // Check if item already exists in cart
+    // Check if item already exists in cart with same weight
     const existingItemIndex = user.cart.findIndex(
-      (item) => item.productId === body.productId
+      (item) => item.productId === body.productId && item.weight === body.weight
     );
 
     if (existingItemIndex > -1) {
-      // Update quantity if item exists
+      // Update quantity if item exists with same weight
       user.cart[existingItemIndex].quantity += body.quantity;
       user.cart[existingItemIndex].price = body.price; // Update price in case it changed
     } else {
@@ -117,6 +122,7 @@ export async function POST(
         productName: body.productName,
         quantity: body.quantity,
         price: body.price,
+        weight: body.weight,
         addedAt: new Date(),
       });
     }
@@ -141,7 +147,7 @@ export async function POST(
   }
 }
 
-// PUT /api/users/cart/[id] - Update cart item quantity
+// PUT /api/users/cart/[id] - Update cart item quantity or weight
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -160,13 +166,13 @@ export async function PUT(
       return NextResponse.json(response, { status: 400 });
     }
 
-    const body: UpdateCartItemRequest = await request.json();
+    const body: any = await request.json();
 
     // Validate required fields
-    if (!body.productId || body.quantity === undefined) {
+    if (!body.productId) {
       const response: ApiResponse = {
         success: false,
-        message: 'Product ID and quantity are required',
+        message: 'Product ID is required',
       };
       return NextResponse.json(response, { status: 400 });
     }
@@ -181,9 +187,14 @@ export async function PUT(
       return NextResponse.json(response, { status: 404 });
     }
 
-    // Find the item in cart
+    // Find the item in cart - match by productId and oldWeight if provided
     const itemIndex = user.cart.findIndex(
-      (item) => item.productId === body.productId
+      (item) => {
+        if (body.oldWeight !== undefined) {
+          return item.productId === body.productId && item.weight === body.oldWeight;
+        }
+        return item.productId === body.productId;
+      }
     );
 
     if (itemIndex === -1) {
@@ -194,11 +205,25 @@ export async function PUT(
       return NextResponse.json(response, { status: 404 });
     }
 
-    // Update quantity or remove if quantity is 0
-    if (body.quantity <= 0) {
-      user.cart.splice(itemIndex, 1);
-    } else {
-      user.cart[itemIndex].quantity = body.quantity;
+    // Update weight if provided
+    if (body.weight !== undefined) {
+      if (body.weight <= 0 || body.weight > 50) {
+        const response: ApiResponse = {
+          success: false,
+          message: 'Weight must be between 0 and 50 kg',
+        };
+        return NextResponse.json(response, { status: 400 });
+      }
+      user.cart[itemIndex].weight = body.weight;
+    }
+
+    // Update quantity if provided
+    if (body.quantity !== undefined) {
+      if (body.quantity <= 0) {
+        user.cart.splice(itemIndex, 1);
+      } else {
+        user.cart[itemIndex].quantity = body.quantity;
+      }
     }
 
     await user.save();

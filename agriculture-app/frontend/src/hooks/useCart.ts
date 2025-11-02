@@ -96,6 +96,38 @@ export const useCart = (userId: string | null) => {
     }
   };
 
+  const updateCartWeight = async (productId: string, oldWeight: number, newWeight: number): Promise<boolean> => {
+    if (!userId) return false;
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch(`/api/users/cart/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId, oldWeight, weight: newWeight }),
+      });
+
+      const data: ApiResponse = await response.json();
+
+      if (data.success) {
+        await fetchCart(); // Refresh cart
+        return true;
+      } else {
+        setError(data.message || 'Failed to update cart weight');
+        return false;
+      }
+    } catch (err: any) {
+      setError(err.message);
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const removeFromCart = async (productId: string): Promise<boolean> => {
     if (!userId) return false;
 
@@ -164,6 +196,7 @@ export const useCart = (userId: string | null) => {
     error,
     addToCart,
     updateCartItem,
+    updateCartWeight,
     removeFromCart,
     clearCart,
     refetch: fetchCart,

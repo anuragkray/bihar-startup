@@ -17,9 +17,13 @@ export default function CartPage() {
     loading,
     error,
     updateCartItem,
+    updateCartWeight,
     removeFromCart,
     clearCart,
   } = useCart(user?._id?.toString() ?? null);
+  const [editingItemId, setEditingItemId] = useState<string | null>(null);
+  const [editingItemWeight, setEditingItemWeight] = useState<number>(0);
+  const [editWeight, setEditWeight] = useState<string>('');
 
   useEffect(() => {
     // Redirect to dashboard if user is not authenticated
@@ -27,11 +31,6 @@ export default function CartPage() {
       router.push('/km-agri-dashboard');
     }
   }, [isAuthenticated, userLoading, router]);
-
-  const handleQuantityChange = async (productId: string, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    await updateCartItem(productId, newQuantity);
-  };
 
   const handleRemove = async (productId: string) => {
     if (confirm('Are you sure you want to remove this item?')) {
@@ -43,6 +42,43 @@ export default function CartPage() {
     if (confirm('Are you sure you want to clear your entire cart?')) {
       await clearCart();
     }
+  };
+
+  const handleEditClick = (productId: string, currentWeight: number) => {
+    setEditingItemId(productId);
+    setEditingItemWeight(currentWeight);
+    setEditWeight(currentWeight.toString());
+  };
+
+  const handleWeightUpdate = async (productId: string) => {
+    const newWeight = parseFloat(editWeight);
+    if (isNaN(newWeight) || newWeight <= 0 || newWeight > 50) {
+      alert('Please enter a valid weight between 0 and 50 kg');
+      return;
+    }
+    
+    // Call API to update weight
+    const success = await updateCartWeight(productId, editingItemWeight, newWeight);
+    
+    if (success) {
+      setEditingItemId(null);
+      setEditWeight('');
+      setEditingItemWeight(0);
+    } else {
+      alert('Failed to update weight. Please try again.');
+    }
+  };
+
+  const handleCancelEdit = () => {
+    setEditingItemId(null);
+    setEditWeight('');
+  };
+
+  const calculateItemTotal = (item: any) => {
+    if (item.weight) {
+      return item.price * item.weight;
+    }
+    return item.price * item.quantity;
   };
 
   if (loading) {
@@ -94,14 +130,53 @@ export default function CartPage() {
       <div className={styles.cartContent}>
         <div className={styles.cartItems}>
           {cart.map((item) => (
-            <div key={item.productId} className={styles.cartItem}>
+            <div key={`${item.productId}-${item.weight || 0}`} className={styles.cartItem}>
               <div className={styles.itemInfo}>
                 <h3 className={styles.itemName}>{item.productName}</h3>
-                <p className={styles.itemPrice}>₹{item.price.toLocaleString()}</p>
+                <p className={styles.itemPrice}>
+                  ₹{item.price.toLocaleString()}/kg
+                </p>
                 {item.weight && (
-                  <p className={styles.itemWeight}>
-                    Weight: {item.weight} kg
-                  </p>
+                  <div className={styles.weightSection}>
+                    {editingItemId === item.productId ? (
+                      <div className={styles.editWeightContainer}>
+                        <input
+                          type="number"
+                          value={editWeight}
+                          onChange={(e) => setEditWeight(e.target.value)}
+                          className={styles.weightInput}
+                          placeholder="Weight (kg)"
+                          min="1"
+                          max="50"
+                        />
+                        <button
+                          onClick={() => handleWeightUpdate(item.productId)}
+                          className={styles.saveButton}
+                        >
+                          ✓
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className={styles.cancelButton}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.weightDisplay}>
+                        <span className={styles.itemWeight}>
+                          Weight: {item.weight} kg
+                        </span>
+                        <button
+                          onClick={() => handleEditClick(item.productId, item.weight || 0)}
+                          className={styles.editButton}
+                          title="Edit weight"
+                        >
+                          ✏️
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 )}
                 <p className={styles.itemAdded}>
                   Added: {new Date(item.addedAt).toLocaleDateString()}
@@ -109,27 +184,10 @@ export default function CartPage() {
               </div>
 
               <div className={styles.itemActions}>
-                <div className={styles.quantityControl}>
-                  <button
-                    onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
-                    className={styles.quantityButton}
-                    disabled={item.quantity <= 1}
-                  >
-                    -
-                  </button>
-                  <span className={styles.quantity}>{item.quantity}</span>
-                  <button
-                    onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
-                    className={styles.quantityButton}
-                  >
-                    +
-                  </button>
-                </div>
-
                 <div className={styles.itemTotal}>
                   <span className={styles.totalLabel}>Total:</span>
                   <span className={styles.totalAmount}>
-                    ₹{(item.price * item.quantity).toLocaleString()}
+                    ₹{calculateItemTotal(item).toLocaleString()}
                   </span>
                 </div>
 
