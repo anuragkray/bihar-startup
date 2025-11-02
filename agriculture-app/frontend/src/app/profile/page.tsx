@@ -1,0 +1,308 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useUser } from '@/context/UserContext';
+import { useUserActions } from '@/hooks/useUsers';
+import { useRouter } from 'next/navigation';
+import styles from './profile.module.css';
+
+export default function ProfilePage() {
+  const { user, isAuthenticated, updateUser } = useUser();
+  const { updateUser: updateUserAPI, loading } = useUserActions();
+  const router = useRouter();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    profilePhoto: '',
+  });
+
+  const [addresses, setAddresses] = useState<any[]>([]);
+  const [newAddress, setNewAddress] = useState({
+    type: 'home' as 'home' | 'work' | 'other',
+    street: '',
+    city: '',
+    state: 'Bihar',
+    pincode: '',
+    isDefault: false,
+  });
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [message, setMessage] = useState({ type: '', text: '' });
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/');
+      return;
+    }
+
+    if (user) {
+      setFormData({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        profilePhoto: user.profilePhoto || '',
+      });
+      setAddresses(user.addresses || []);
+    }
+  }, [user, isAuthenticated, router]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleAddressChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setNewAddress({
+      ...newAddress,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage({ type: '', text: '' });
+
+    if (!user?._id) return;
+
+    const updatedUser = await updateUserAPI(user._id as string, {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      profilePhoto: formData.profilePhoto,
+      addresses,
+    });
+
+    if (updatedUser) {
+      updateUser(updatedUser);
+      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+    } else {
+      setMessage({ type: 'error', text: 'Failed to update profile' });
+    }
+  };
+
+  const handleAddAddress = () => {
+    if (!newAddress.street || !newAddress.city || !newAddress.pincode) {
+      setMessage({ type: 'error', text: 'Please fill all address fields' });
+      return;
+    }
+
+    const updatedAddresses = [...addresses, newAddress];
+    setAddresses(updatedAddresses);
+    setNewAddress({
+      type: 'home',
+      street: '',
+      city: '',
+      state: 'Bihar',
+      pincode: '',
+      isDefault: false,
+    });
+    setShowAddressForm(false);
+    setMessage({ type: 'success', text: 'Address added! Click Update Profile to save.' });
+  };
+
+  const handleRemoveAddress = (index: number) => {
+    const updatedAddresses = addresses.filter((_, i) => i !== index);
+    setAddresses(updatedAddresses);
+  };
+
+  const handleSetDefaultAddress = (index: number) => {
+    const updatedAddresses = addresses.map((addr, i) => ({
+      ...addr,
+      isDefault: i === index,
+    }));
+    setAddresses(updatedAddresses);
+  };
+
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.profileCard}>
+        <h1 className={styles.title}>My Profile</h1>
+
+        {message.text && (
+          <div className={`${styles.message} ${styles[message.type]}`}>
+            {message.text}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.section}>
+            <h2 className={styles.sectionTitle}>Personal Information</h2>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="name">Full Name *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className={styles.formRow}>
+              <div className={styles.formGroup}>
+                <label htmlFor="email">Email *</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="phone">Phone *</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  pattern="[0-9]{10}"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label htmlFor="profilePhoto">Profile Photo URL</label>
+              <input
+                type="url"
+                id="profilePhoto"
+                name="profilePhoto"
+                value={formData.profilePhoto}
+                onChange={handleChange}
+                placeholder="https://example.com/photo.jpg"
+              />
+            </div>
+          </div>
+
+          <div className={styles.section}>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Saved Addresses</h2>
+              <button
+                type="button"
+                onClick={() => setShowAddressForm(!showAddressForm)}
+                className={styles.addButton}
+              >
+                {showAddressForm ? 'Cancel' : '+ Add Address'}
+              </button>
+            </div>
+
+            {showAddressForm && (
+              <div className={styles.addressForm}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="type">Address Type</label>
+                  <select
+                    id="type"
+                    name="type"
+                    value={newAddress.type}
+                    onChange={handleAddressChange}
+                  >
+                    <option value="home">Home</option>
+                    <option value="work">Work</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="street">Street Address *</label>
+                  <input
+                    type="text"
+                    id="street"
+                    name="street"
+                    value={newAddress.street}
+                    onChange={handleAddressChange}
+                    placeholder="House no., Street name"
+                  />
+                </div>
+
+                <div className={styles.formRow}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="city">City *</label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      value={newAddress.city}
+                      onChange={handleAddressChange}
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="pincode">Pincode *</label>
+                    <input
+                      type="text"
+                      id="pincode"
+                      name="pincode"
+                      value={newAddress.pincode}
+                      onChange={handleAddressChange}
+                      pattern="[0-9]{6}"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleAddAddress}
+                  className={styles.saveAddressButton}
+                >
+                  Save Address
+                </button>
+              </div>
+            )}
+
+            <div className={styles.addressList}>
+              {addresses.map((address, index) => (
+                <div key={index} className={styles.addressCard}>
+                  <div className={styles.addressHeader}>
+                    <span className={styles.addressType}>{address.type.toUpperCase()}</span>
+                    {address.isDefault && <span className={styles.defaultBadge}>Default</span>}
+                  </div>
+                  <p className={styles.addressText}>
+                    {address.street}, {address.city}
+                  </p>
+                  <p className={styles.addressText}>
+                    {address.state} - {address.pincode}
+                  </p>
+                  <div className={styles.addressActions}>
+                    {!address.isDefault && (
+                      <button
+                        type="button"
+                        onClick={() => handleSetDefaultAddress(index)}
+                        className={styles.setDefaultButton}
+                      >
+                        Set as Default
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveAddress(index)}
+                      className={styles.removeButton}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <button type="submit" className={styles.submitButton} disabled={loading}>
+            {loading ? 'Updating...' : 'Update Profile'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
