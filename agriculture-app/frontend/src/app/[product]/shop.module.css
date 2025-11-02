@@ -5,31 +5,20 @@
   padding: 20px;
 }
 
-/* Shop Header */
-.shopHeader {
+/* Shop Container - Wrapper for breadcrumb and header */
+.shopContainer {
   max-width: 1400px;
-  margin: 0 auto 40px;
-  text-align: center;
-  padding: 20px;
+  margin: 0 auto 30px;
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-.backLink {
-  display: inline-block;
-  margin-bottom: 20px;
-  padding: 10px 20px;
-  background: #2d5016;
-  color: white;
-  text-decoration: none;
-  border-radius: 6px;
-  font-weight: 500;
-  transition: background 0.3s ease;
-}
-
-.backLink:hover {
-  background: #1a3708;
+/* Shop Header */
+.shopHeader {
+  text-align: left;
+  padding-top: 10px;
 }
 
 .shopTitle {
@@ -128,7 +117,7 @@
 
 .buyButton {
   padding: 10px 24px;
-  background: #2d5016;
+  background: black;
   color: white;
   border: none;
   border-radius: 6px;

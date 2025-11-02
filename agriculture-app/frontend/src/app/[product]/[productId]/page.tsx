@@ -3,6 +3,10 @@ import React, { useState, use, useEffect } from "react";
 import styles from "./productDetail.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import { useUser } from "@/context/UserContext";
+import { useCart } from "@/hooks/useCart";
+import { toast } from 'react-toastify';
+import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 
 // Helper function to get image URLs from API
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -26,82 +30,87 @@ const shopData: Record<string, any> = {
       {
         id: 1,
         name: "Wheat Seeds",
-        price: 2680,
-        unit: "Quintal",
+        price: 26.8,
+        unit: "Kg",
         image: "",
-        description: "Premium quality wheat seeds with high yield. These seeds are specially selected for their superior germination rate and disease resistance. Ideal for all soil types and climatic conditions.",
+        description:
+          "Premium quality wheat seeds with high yield. These seeds are specially selected for their superior germination rate and disease resistance. Ideal for all soil types and climatic conditions.",
         features: [
           "High germination rate (>95%)",
           "Disease resistant variety",
           "Suitable for all soil types",
           "Excellent yield potential",
-          "Certified quality seeds"
-        ]
+          "Certified quality seeds",
+        ],
       },
       {
         id: 2,
         name: "Paddy Seeds",
-        price: 2300,
-        unit: "Quintal",
+        price: 23.0,
+        unit: "Kg",
         image: "",
-        description: "Hybrid rice seeds for better production with enhanced grain quality and pest resistance.",
+        description:
+          "Hybrid rice seeds for better production with enhanced grain quality and pest resistance.",
         features: [
           "Hybrid variety",
           "High yield potential",
           "Pest resistant",
           "Good grain quality",
-          "Suitable for wet cultivation"
-        ]
+          "Suitable for wet cultivation",
+        ],
       },
       {
         id: 3,
         name: "Corn Seeds",
-        price: 450,
+        price: 26,
         unit: "kg",
         image: "",
-        description: "Disease-resistant corn seeds with excellent yield and quality.",
+        description:
+          "Disease-resistant corn seeds with excellent yield and quality.",
         features: [
           "Disease resistant",
           "High yield",
           "Good grain quality",
           "Drought tolerant",
-          "Fast growing variety"
-        ]
+          "Fast growing variety",
+        ],
       },
       {
         id: 4,
-        name: "Sugarcane",
-        price: 300,
-        unit: "pack",
+        name: "Sugarcane Seeds",
+        price: 3.0,
+        unit: "kg",
         image: "",
-        description: "Premium sugarcane seeds for high sugar content and better yield.",
+        description:
+          "Premium sugarcane seeds for high sugar content and better yield.",
         features: [
           "High sugar content",
           "Disease resistant",
           "Good tillering",
           "Suitable for all regions",
-          "Long harvesting period"
-        ]
+          "Long harvesting period",
+        ],
       },
       {
         id: 5,
         name: "Mustard Seeds",
-        price: 400,
+        price: 60,
         unit: "kg",
         image: "",
-        description: "High oil content mustard seeds for commercial cultivation.",
+        description:
+          "High oil content mustard seeds for commercial cultivation.",
         features: [
           "High oil content",
           "Disease resistant",
           "Good yield",
           "Suitable for winter season",
-          "Premium quality"
-        ]
+          "Premium quality",
+        ],
       },
       {
         id: 6,
         name: "Pearl Millet Seeds",
-        price: 550,
+        price: 120,
         unit: "kg",
         image: "",
         description: "Drought-resistant pearl millet seeds for dry regions.",
@@ -110,12 +119,48 @@ const shopData: Record<string, any> = {
           "High nutritional value",
           "Good yield",
           "Suitable for dry regions",
-          "Fast growing"
-        ]
+          "Fast growing",
+        ],
       },
     ],
   },
-  // Add other categories as needed
+  "fertilizer-shop": {
+    title: "Fertilizer Shop",
+    products: [
+      {
+        id: 1,
+        name: "Urea",
+        price: 267,
+        unit: "Bag/45 kg",
+        image: "",
+        description:
+          "High nitrogen content fertilizer for enhanced crop growth. Urea is the most widely used nitrogen fertilizer, providing essential nutrients for plant development and increased yield.",
+        features: [
+          "46% nitrogen content",
+          "Quick release formula",
+          "Suitable for all crops",
+          "Increases crop yield",
+          "Cost-effective solution",
+        ],
+      },
+      {
+        id: 2,
+        name: "Potash",
+        price: 630,
+        unit: "Bag/50 Kg",
+        image: "",
+        description:
+          "Potassium-rich fertilizer for improved crop quality and disease resistance. Essential for fruit development, root growth, and overall plant health.",
+        features: [
+          "High potassium content",
+          "Improves fruit quality",
+          "Enhances disease resistance",
+          "Strengthens plant stems",
+          "Increases water efficiency",
+        ],
+      },
+    ],
+  },
 };
 
 interface PageProps {
@@ -127,17 +172,25 @@ interface PageProps {
 
 const ProductDetailPage = ({ params }: PageProps) => {
   const { product, productId } = use(params);
+  const { user, isAuthenticated } = useUser();
+  const { addToCart } = useCart(user?._id?.toString() ?? null);
   const [images, setImages] = useState<string[]>([]);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState<string>("1");
-  const [weightKg, setWeightKg] = useState<string>("1");
-  const [weightGrams, setWeightGrams] = useState<string>("0");
+  const [weightKg, setWeightKg] = useState<string>("");
+  const [weightGrams, setWeightGrams] = useState<string>("");
+  const [weightInput, setWeightInput] = useState<string>("");
+  const [bagQuantity, setBagQuantity] = useState<string>("");
+  const [useDropdown, setUseDropdown] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   const shopInfo = shopData[product];
   const productData = shopInfo?.products.find(
     (p: any) => p.id === parseInt(productId)
   );
+  
+  // Check if this is a fertilizer product
+  const isFertilizerProduct = product === "fertilizer-shop";
 
   useEffect(() => {
     if (productData) {
@@ -161,34 +214,92 @@ const ProductDetailPage = ({ params }: PageProps) => {
     );
   }
 
-  const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "");
-    if (value === "" || parseInt(value) > 0) {
-      setQuantity(value);
+  const handleWeightInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d.]/g, "");
+
+    // Validate max 50 kg
+    const numValue = parseFloat(value);
+    if (value === "" || (numValue >= 0 && numValue <= 50)) {
+      setWeightInput(value);
+      // Switch to input mode when user starts typing
+      if (value !== "") {
+        setUseDropdown(false);
+      }
     }
   };
 
-  const handleAddToBag = () => {
-    const totalWeight = parseInt(weightKg) + parseInt(weightGrams) / 1000;
-    const bagItem = {
-      productId: productData.id,
-      productName: productData.name,
-      quantity: parseInt(quantity) || 1,
-      weight: totalWeight,
-      price: productData.price,
-      unit: productData.unit,
-      image: images[0] || "",
-    };
+  const handleWeightKgChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setWeightKg(e.target.value);
+    setUseDropdown(true);
+    setWeightInput(""); // Clear input when dropdown is used
+  };
 
-    // Get existing bag from localStorage
-    const existingBag = JSON.parse(localStorage.getItem("shoppingBag") || "[]");
-    existingBag.push(bagItem);
-    localStorage.setItem("shoppingBag", JSON.stringify(existingBag));
+  const handleBagQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setBagQuantity(e.target.value);
+    setUseDropdown(true);
+  };
 
-    // Dispatch custom event to update header
-    window.dispatchEvent(new Event("bagUpdated"));
+  const handleAddToBag = async () => {
+    if (!isAuthenticated) {
+      toast.error("Please login to add items to cart");
+      return;
+    }
 
-    alert("Item added to bag!");
+    // For fertilizer products, use bag quantity
+    let totalWeight: number | undefined;
+    let quantity = 1;
+    
+    if (isFertilizerProduct) {
+      quantity = parseInt(bagQuantity) || 0;
+      if (quantity === 0) {
+        toast.error("Please select number of bags");
+        return;
+      }
+    } else {
+      // For other products, calculate weight in kg
+      if (useDropdown) {
+        const kg = parseFloat(weightKg) || 0;
+        totalWeight = kg;
+      } else if (weightInput) {
+        totalWeight = parseFloat(weightInput);
+      }
+
+      // Validate weight
+      if (totalWeight && totalWeight > 50) {
+        toast.error("Weight cannot exceed 50 kg");
+        return;
+      }
+    }
+
+    setAddingToCart(true);
+    try {
+      const success = await addToCart({
+        productId: productData.id.toString(),
+        productName: productData.name,
+        quantity: quantity,
+        price: productData.price,
+        weight: totalWeight,
+      });
+
+      if (success) {
+        // Dispatch custom event to update header
+        window.dispatchEvent(new Event("bagUpdated"));
+        toast.success("Item added to cart!");
+
+        // Reset inputs after successful add
+        setWeightInput("");
+        setWeightKg("");
+        setBagQuantity("");
+        setUseDropdown(true);
+      } else {
+        toast.error("Failed to add item to cart. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      toast.error("An error occurred. Please try again.");
+    } finally {
+      setAddingToCart(false);
+    }
   };
 
   const nextImage = () => {
@@ -199,12 +310,25 @@ const ProductDetailPage = ({ params }: PageProps) => {
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  // Helper function to format shop name for breadcrumb
+  const formatShopName = (slug: string) => {
+    return slug
+      .split("-")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: "Home", href: "/km-agri-dashboard" },
+    { label: formatShopName(product), href: `/${product}` },
+    { label: productData.name, href: `/${product}/${productId}` },
+  ];
+
   return (
     <div className={styles.detailPage}>
       <div className={styles.container}>
-        <Link href={`/${product}`} className={styles.backLink}>
-          ← Back to {shopInfo.title}
-        </Link>
+        <Breadcrumb items={breadcrumbItems} />
 
         <div className={styles.productDetailContainer}>
           {/* Left Side - Image Carousel */}
@@ -287,66 +411,94 @@ const ProductDetailPage = ({ params }: PageProps) => {
               <div className={styles.features}>
                 <h3>Key Features</h3>
                 <ul>
-                  {productData.features.map((feature: string, index: number) => (
-                    <li key={index}>{feature}</li>
-                  ))}
+                  {productData.features.map(
+                    (feature: string, index: number) => (
+                      <li key={index}>{feature}</li>
+                    )
+                  )}
                 </ul>
               </div>
             )}
 
-            {/* Quantity and Weight Selection */}
+            {/* Quantity/Weight Selection */}
             <div className={styles.selectionSection}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="quantity">Quantity</label>
-                <input
-                  type="text"
-                  id="quantity"
-                  value={quantity}
-                  onChange={handleQuantityChange}
-                  className={styles.quantityInput}
-                  placeholder="Enter quantity"
-                />
-              </div>
-
-              <div className={styles.weightSection}>
+              {isFertilizerProduct ? (
+                // For fertilizer products - show bag selection
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightKg">Weight (kg)</label>
+                  <label htmlFor="bagQuantity">Select Number of Bags</label>
                   <select
-                    id="weightKg"
-                    value={weightKg}
-                    onChange={(e) => setWeightKg(e.target.value)}
+                    id="bagQuantity"
+                    value={bagQuantity}
+                    onChange={handleBagQuantityChange}
                     className={styles.weightSelect}
                   >
-                    {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
-                      <option key={kg} value={kg}>
-                        {kg} kg
+                    <option value="">Please select number of bags</option>
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                      <option key={num} value={num}>
+                        {num} {num === 1 ? 'bag' : 'bags'}
                       </option>
                     ))}
                   </select>
                 </div>
+              ) : (
+                // For other products - show weight selection
+                <>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="weightInput">Please Enter Weight (kg)</label>
+                    <input
+                      type="text"
+                      id="weightInput"
+                      value={weightInput}
+                      onChange={handleWeightInputChange}
+                      className={styles.quantityInput}
+                      placeholder="Enter weight (max 50 kg)"
+                      disabled={useDropdown && weightKg !== ""}
+                    />
+                    <small style={{ color: "#666", fontSize: "12px" }}>
+                      Max 50 kg allowed
+                    </small>
+                  </div>
 
-                <div className={styles.inputGroup}>
-                  <label htmlFor="weightGrams">Weight (grams)</label>
-                  <select
-                    id="weightGrams"
-                    value={weightGrams}
-                    onChange={(e) => setWeightGrams(e.target.value)}
-                    className={styles.weightSelect}
+                  <div
+                    style={{
+                      textAlign: "center",
+                      margin: "10px 0",
+                      color: "#666",
+                    }}
                   >
-                    <option value="0">0 g</option>
-                    {Array.from({ length: 9 }, (_, i) => (i + 1) * 100).map(
-                      (grams) => (
-                        <option key={grams} value={grams}>
-                          {grams} g
-                        </option>
-                      )
-                    )}
-                  </select>
-                </div>
-              </div>
+                    OR
+                  </div>
 
-              <button className={styles.addToBagButton} onClick={handleAddToBag}>
-                Add to Bag
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="weightKg">Select Weight (kg)</label>
+                    <select
+                      id="weightKg"
+                      value={weightKg}
+                      onChange={handleWeightKgChange}
+                      className={styles.weightSelect}
+                      disabled={!useDropdown && weightInput !== ""}
+                    >
+                      <option value="">Please select weight (Kg)</option>
+                      {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
+                        <option key={kg} value={kg}>
+                          {kg} kg
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
+
+              <button
+                className={styles.addToBagButton}
+                onClick={handleAddToBag}
+                disabled={addingToCart || !isAuthenticated}
+              >
+                {addingToCart
+                  ? "Adding..."
+                  : !isAuthenticated
+                  ? "Login to Add to Cart"
+                  : "Add to Bag"}
               </button>
             </div>
           </div>

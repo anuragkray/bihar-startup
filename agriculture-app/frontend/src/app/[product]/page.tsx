@@ -3,6 +3,7 @@ import React, { useState, use, useEffect } from "react";
 import styles from "./shop.module.css";
 import Link from "next/link";
 import Image from "next/image";
+import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 
 // Helper function to get image URLs from API (returns array of images)
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -47,10 +48,10 @@ const shopData: Record<string, any> = {
       },
       {
         id: 4,
-        name: "Sugarcane",
-        price: "₹2.5/Kg",
+        name: "Sugarcane Seeds",
+        price: "₹3.0/Kg",
         image: "",
-        description: "Mixed vegetable seeds pack",
+        description: "Sugarcane seeds bundle",
       },
       {
         id: 5,
@@ -74,45 +75,18 @@ const shopData: Record<string, any> = {
     products: [
       {
         id: 1,
-        name: "NPK Fertilizer",
-        price: "₹800/bag",
+        name: "Urea",
+        price: "₹267-bag/45kg",
         image: "",
-        description: "Balanced NPK formula 19-19-19",
+        description:
+          "High nitrogen content fertilizer for enhanced crop growth",
       },
       {
         id: 2,
-        name: "Urea",
-        price: "₹600/bag",
-        image: "",
-        description: "High nitrogen content fertilizer",
-      },
-      {
-        id: 3,
-        name: "DAP",
-        price: "₹1,200/bag",
-        image: "",
-        description: "Di-ammonium phosphate fertilizer",
-      },
-      {
-        id: 4,
-        name: "Organic Compost",
-        price: "₹400/bag",
-        image: "",
-        description: "100% organic compost",
-      },
-      {
-        id: 5,
         name: "Potash",
-        price: "₹900/bag",
+        price: "₹630-bag/50kg",
         image: "",
-        description: "Potassium-rich fertilizer",
-      },
-      {
-        id: 6,
-        name: "Micronutrient Mix",
-        price: "₹500/kg",
-        image: "",
-        description: "Essential micronutrients blend",
+        description: "Potassium-rich fertilizer for improved crop quality",
       },
     ],
   },
@@ -406,14 +380,29 @@ const ShopPage = ({ params }: PageProps) => {
     );
   }
 
+  // Helper function to format shop name for breadcrumb
+  const formatShopName = (slug: string) => {
+    return slug
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', href: '/km-agri-dashboard' },
+    { label: formatShopName(product), href: `/${product}` },
+  ];
+
   return (
     <div className={styles.shopPage}>
-      <div className={styles.shopHeader}>
-        <Link href="/km-agri-dashboard" className={styles.backLink}>
-          ← Back to Dashboard
-        </Link>
-        <h1 className={styles.shopTitle}>{shopInfo.title}</h1>
-        <p className={styles.shopDescription}>{shopInfo.description}</p>
+      <div className={styles.shopContainer}>
+        <Breadcrumb items={breadcrumbItems} />
+        
+        <div className={styles.shopHeader}>
+          <h1 className={styles.shopTitle}>{shopInfo.title}</h1>
+          <p className={styles.shopDescription}>{shopInfo.description}</p>
+        </div>
       </div>
 
       <div className={styles.productsGrid}>
