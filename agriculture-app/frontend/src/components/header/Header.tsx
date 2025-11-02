@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./Header.module.css";
 import { FaBars, FaShoppingCart, FaUserCircle } from "react-icons/fa";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/context/UserContext";
 import AuthModal from "@/components/auth/AuthModal";
 import MobileSidebar from "@/components/mobile-sidebar/MobileSidebar";
@@ -14,6 +14,7 @@ const Header = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, isAuthenticated, loading, logout } = useUser();
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Fetch cart count from API if user is authenticated
@@ -36,6 +37,23 @@ const Header = () => {
       window.removeEventListener("bagUpdated", handleBagUpdate);
     };
   }, [isAuthenticated, user?._id]);
+
+  // Handle click outside to close user menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showUserMenu]);
 
   const fetchCartCount = async () => {
     if (!user?._id) return;
@@ -107,7 +125,7 @@ const Header = () => {
             </div>
           )}
 
-          <div className={styles.userSection}>
+          <div className={styles.userSection} ref={userMenuRef}>
             <div
               className={styles.userIconContainer}
               onClick={handleUserIconClick}
