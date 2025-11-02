@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useUser } from "@/context/UserContext";
 import { useCart } from "@/hooks/useCart";
+import { toast } from 'react-toastify';
 import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
 
 // Helper function to get image URLs from API
@@ -178,6 +179,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
   const [weightKg, setWeightKg] = useState<string>("");
   const [weightGrams, setWeightGrams] = useState<string>("");
   const [weightInput, setWeightInput] = useState<string>("");
+  const [bagQuantity, setBagQuantity] = useState<string>("");
   const [useDropdown, setUseDropdown] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
@@ -186,6 +188,9 @@ const ProductDetailPage = ({ params }: PageProps) => {
   const productData = shopInfo?.products.find(
     (p: any) => p.id === parseInt(productId)
   );
+  
+  // Check if this is a fertilizer product
+  const isFertilizerProduct = product === "fertilizer-shop";
 
   useEffect(() => {
     if (productData) {
@@ -229,34 +234,41 @@ const ProductDetailPage = ({ params }: PageProps) => {
     setWeightInput(""); // Clear input when dropdown is used
   };
 
-  const handleWeightGramsChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setWeightGrams(e.target.value);
+  const handleBagQuantityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setBagQuantity(e.target.value);
     setUseDropdown(true);
-    setWeightInput(""); // Clear input when dropdown is used
   };
 
   const handleAddToBag = async () => {
     if (!isAuthenticated) {
-      alert("Please login to add items to cart");
+      toast.error("Please login to add items to cart");
       return;
     }
 
-    // Calculate weight in kg
+    // For fertilizer products, use bag quantity
     let totalWeight: number | undefined;
-    if (useDropdown) {
-      // Using dropdown: convert kg and grams to total kg
-      const kg = parseFloat(weightKg) || 0;
-      const grams = parseFloat(weightGrams) || 0;
-      totalWeight = kg + grams / 1000;
-    } else if (weightInput) {
-      // Using manual input
-      totalWeight = parseFloat(weightInput);
-    }
+    let quantity = 1;
+    
+    if (isFertilizerProduct) {
+      quantity = parseInt(bagQuantity) || 0;
+      if (quantity === 0) {
+        toast.error("Please select number of bags");
+        return;
+      }
+    } else {
+      // For other products, calculate weight in kg
+      if (useDropdown) {
+        const kg = parseFloat(weightKg) || 0;
+        totalWeight = kg;
+      } else if (weightInput) {
+        totalWeight = parseFloat(weightInput);
+      }
 
-    // Validate weight
-    if (totalWeight && totalWeight > 50) {
-      alert("Weight cannot exceed 50 kg");
-      return;
+      // Validate weight
+      if (totalWeight && totalWeight > 50) {
+        toast.error("Weight cannot exceed 50 kg");
+        return;
+      }
     }
 
     setAddingToCart(true);
@@ -264,7 +276,7 @@ const ProductDetailPage = ({ params }: PageProps) => {
       const success = await addToCart({
         productId: productData.id.toString(),
         productName: productData.name,
-        quantity: 1,
+        quantity: quantity,
         price: productData.price,
         weight: totalWeight,
       });
@@ -272,19 +284,19 @@ const ProductDetailPage = ({ params }: PageProps) => {
       if (success) {
         // Dispatch custom event to update header
         window.dispatchEvent(new Event("bagUpdated"));
-        alert("Item added to cart!");
+        toast.success("Item added to cart!");
 
-        // Reset weight inputs after successful add
+        // Reset inputs after successful add
         setWeightInput("");
         setWeightKg("");
-        setWeightGrams("");
+        setBagQuantity("");
         setUseDropdown(true);
       } else {
-        alert("Failed to add item to cart. Please try again.");
+        toast.error("Failed to add item to cart. Please try again.");
       }
     } catch (error) {
       console.error("Error adding to cart:", error);
-      alert("An error occurred. Please try again.");
+      toast.error("An error occurred. Please try again.");
     } finally {
       setAddingToCart(false);
     }
@@ -408,55 +420,74 @@ const ProductDetailPage = ({ params }: PageProps) => {
               </div>
             )}
 
-            {/* Weight Selection */}
+            {/* Quantity/Weight Selection */}
             <div className={styles.selectionSection}>
-              <div className={styles.inputGroup}>
-                <label htmlFor="weightInput">Please Enter Weight (kg)</label>
-                <input
-                  type="text"
-                  id="weightInput"
-                  value={weightInput}
-                  onChange={handleWeightInputChange}
-                  className={styles.quantityInput}
-                  placeholder="Enter weight (max 50 kg)"
-                  disabled={
-                    useDropdown && (weightKg !== "" || weightGrams !== "")
-                  }
-                />
-                <small style={{ color: "#666", fontSize: "12px" }}>
-                  Max 50 kg allowed
-                </small>
-              </div>
-
-              <div
-                style={{
-                  textAlign: "center",
-                  margin: "10px 0",
-                  color: "#666",
-                }}
-              >
-                OR
-              </div>
-
-              <div className={styles.selectionSection}>
+              {isFertilizerProduct ? (
+                // For fertilizer products - show bag selection
                 <div className={styles.inputGroup}>
-                  <label htmlFor="weightKg">Select Weight (kg)</label>
+                  <label htmlFor="bagQuantity">Select Number of Bags</label>
                   <select
-                    id="weightKg"
-                    value={weightKg}
-                    onChange={handleWeightKgChange}
+                    id="bagQuantity"
+                    value={bagQuantity}
+                    onChange={handleBagQuantityChange}
                     className={styles.weightSelect}
-                    disabled={!useDropdown && weightInput !== ""}
                   >
-                    <option value="">Please select weight (Kg)</option>
-                    {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
-                      <option key={kg} value={kg}>
-                        {kg} kg
+                    <option value="">Please select number of bags</option>
+                    {Array.from({ length: 10 }, (_, i) => i + 1).map((num) => (
+                      <option key={num} value={num}>
+                        {num} {num === 1 ? 'bag' : 'bags'}
                       </option>
                     ))}
                   </select>
                 </div>
-              </div>
+              ) : (
+                // For other products - show weight selection
+                <>
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="weightInput">Please Enter Weight (kg)</label>
+                    <input
+                      type="text"
+                      id="weightInput"
+                      value={weightInput}
+                      onChange={handleWeightInputChange}
+                      className={styles.quantityInput}
+                      placeholder="Enter weight (max 50 kg)"
+                      disabled={useDropdown && weightKg !== ""}
+                    />
+                    <small style={{ color: "#666", fontSize: "12px" }}>
+                      Max 50 kg allowed
+                    </small>
+                  </div>
+
+                  <div
+                    style={{
+                      textAlign: "center",
+                      margin: "10px 0",
+                      color: "#666",
+                    }}
+                  >
+                    OR
+                  </div>
+
+                  <div className={styles.inputGroup}>
+                    <label htmlFor="weightKg">Select Weight (kg)</label>
+                    <select
+                      id="weightKg"
+                      value={weightKg}
+                      onChange={handleWeightKgChange}
+                      className={styles.weightSelect}
+                      disabled={!useDropdown && weightInput !== ""}
+                    >
+                      <option value="">Please select weight (Kg)</option>
+                      {Array.from({ length: 50 }, (_, i) => i + 1).map((kg) => (
+                        <option key={kg} value={kg}>
+                          {kg} kg
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
 
               <button
                 className={styles.addToBagButton}

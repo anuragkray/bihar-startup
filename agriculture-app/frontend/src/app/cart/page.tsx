@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext';
 import { useCart } from '@/hooks/useCart';
 import Link from 'next/link';
+import { toast } from 'react-toastify';
 import styles from './cart.module.css';
 
 export default function CartPage() {
@@ -53,7 +54,7 @@ export default function CartPage() {
   const handleWeightUpdate = async (productId: string) => {
     const newWeight = parseFloat(editWeight);
     if (isNaN(newWeight) || newWeight <= 0 || newWeight > 50) {
-      alert('Please enter a valid weight between 0 and 50 kg');
+      toast.error('Please enter a valid weight between 1 and 50 kg');
       return;
     }
     
@@ -61,11 +62,12 @@ export default function CartPage() {
     const success = await updateCartWeight(productId, editingItemWeight, newWeight);
     
     if (success) {
+      toast.success('Weight updated successfully!');
       setEditingItemId(null);
       setEditWeight('');
       setEditingItemWeight(0);
     } else {
-      alert('Failed to update weight. Please try again.');
+      toast.error('Failed to update weight. Please try again.');
     }
   };
 

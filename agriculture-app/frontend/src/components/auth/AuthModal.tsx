@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useUserActions } from '@/hooks/useUsers';
 import { useUser } from '@/context/UserContext';
+import { toast } from 'react-toastify';
 import styles from './AuthModal.module.css';
 
 interface AuthModalProps {
@@ -34,10 +35,12 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
     setError("");
 
     if (currentMode === "register") {
-      // Show alert that registration is not allowed
-      alert(
-        "We are not allowing new registration right now. Please keep in touch."
+      // Show toast that registration is not allowed and close modal
+      toast.info(
+        "We are not allowing new registration right now. Please keep in touch.",
+        { autoClose: 5000 }
       );
+      onClose();
       return;
       // // Validate required fields
       // if (!formData.name || !formData.email || !formData.phone) {
