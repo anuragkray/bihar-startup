@@ -16,7 +16,7 @@ const productImageNames: Record<string, string[]> = {
     "maize_2_ynqtzj.jpg",
     "maize_3_grzpef.jpg",
   ],
-  sugarcane: ["sugarcane_1_nszvwz.jpg", "sugarcane_ngsqa1.jpg"],
+  "sugarcane-seeds": ["sugarcane_1_nszvwz.jpg", "sugarcane_ngsqa1.jpg"],
   "mustard-seeds": [
     "mustard_uy08ca.jpg",
     "mustard_1_frzxn2.jpg",

@@ -77,9 +77,9 @@ const shopData: Record<string, any> = {
       },
       {
         id: 4,
-        name: "Sugarcane",
-        price: 2.5,
-        unit: "pack",
+        name: "Sugarcane Seeds",
+        price: 3.0,
+        unit: "kg",
         image: "",
         description:
           "Premium sugarcane seeds for high sugar content and better yield.",
@@ -130,8 +130,8 @@ const shopData: Record<string, any> = {
       {
         id: 1,
         name: "Urea",
-        price: 600,
-        unit: "bag",
+        price: 267,
+        unit: "Bag/45 kg",
         image: "",
         description:
           "High nitrogen content fertilizer for enhanced crop growth. Urea is the most widely used nitrogen fertilizer, providing essential nutrients for plant development and increased yield.",
@@ -146,8 +146,8 @@ const shopData: Record<string, any> = {
       {
         id: 2,
         name: "Potash",
-        price: 900,
-        unit: "bag",
+        price: 630,
+        unit: "Bag/50 Kg",
         image: "",
         description:
           "Potassium-rich fertilizer for improved crop quality and disease resistance. Essential for fruit development, root growth, and overall plant health.",

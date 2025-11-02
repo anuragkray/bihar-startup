@@ -25,6 +25,7 @@ export default function CartPage() {
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [editingItemWeight, setEditingItemWeight] = useState<number>(0);
   const [editWeight, setEditWeight] = useState<string>('');
+  const [editQuantity, setEditQuantity] = useState<string>('');
 
   useEffect(() => {
     // Redirect to dashboard if user is not authenticated
@@ -45,35 +46,58 @@ export default function CartPage() {
     }
   };
 
-  const handleEditClick = (productId: string, currentWeight: number) => {
+  const handleEditClick = (productId: string, currentWeight: number, currentQuantity?: number) => {
     setEditingItemId(productId);
     setEditingItemWeight(currentWeight);
     setEditWeight(currentWeight.toString());
+    if (currentQuantity) {
+      setEditQuantity(currentQuantity.toString());
+    }
   };
 
-  const handleWeightUpdate = async (productId: string) => {
-    const newWeight = parseFloat(editWeight);
-    if (isNaN(newWeight) || newWeight <= 0 || newWeight > 50) {
-      toast.error('Please enter a valid weight between 1 and 50 kg');
-      return;
-    }
-    
-    // Call API to update weight
-    const success = await updateCartWeight(productId, editingItemWeight, newWeight);
-    
-    if (success) {
-      toast.success('Weight updated successfully!');
-      setEditingItemId(null);
-      setEditWeight('');
-      setEditingItemWeight(0);
+  const handleWeightUpdate = async (productId: string, hasWeight: boolean) => {
+    if (hasWeight) {
+      const newWeight = parseFloat(editWeight);
+      if (isNaN(newWeight) || newWeight <= 0 || newWeight > 50) {
+        toast.error('Please enter a valid weight between 1 and 50 kg');
+        return;
+      }
+      
+      // Call API to update weight
+      const success = await updateCartWeight(productId, editingItemWeight, newWeight);
+      
+      if (success) {
+        toast.success('Weight updated successfully!');
+        setEditingItemId(null);
+        setEditWeight('');
+        setEditingItemWeight(0);
+      } else {
+        toast.error('Failed to update weight. Please try again.');
+      }
     } else {
-      toast.error('Failed to update weight. Please try again.');
+      // Update quantity for bag-based products
+      const newQuantity = parseInt(editQuantity);
+      if (isNaN(newQuantity) || newQuantity <= 0 || newQuantity > 100) {
+        toast.error('Please enter a valid quantity between 1 and 100');
+        return;
+      }
+      
+      const success = await updateCartItem(productId, newQuantity);
+      
+      if (success) {
+        toast.success('Quantity updated successfully!');
+        setEditingItemId(null);
+        setEditQuantity('');
+      } else {
+        toast.error('Failed to update quantity. Please try again.');
+      }
     }
   };
 
   const handleCancelEdit = () => {
     setEditingItemId(null);
     setEditWeight('');
+    setEditQuantity('');
   };
 
   const calculateItemTotal = (item: any) => {
@@ -136,9 +160,9 @@ export default function CartPage() {
               <div className={styles.itemInfo}>
                 <h3 className={styles.itemName}>{item.productName}</h3>
                 <p className={styles.itemPrice}>
-                  ₹{item.price.toLocaleString()}/kg
+                  ₹{item.price.toLocaleString()}/{item.weight ? 'kg' : 'bag'}
                 </p>
-                {item.weight && (
+                {item.weight ? (
                   <div className={styles.weightSection}>
                     {editingItemId === item.productId ? (
                       <div className={styles.editWeightContainer}>
@@ -152,7 +176,7 @@ export default function CartPage() {
                           max="50"
                         />
                         <button
-                          onClick={() => handleWeightUpdate(item.productId)}
+                          onClick={() => handleWeightUpdate(item.productId, true)}
                           className={styles.saveButton}
                         >
                           ✓
@@ -173,6 +197,47 @@ export default function CartPage() {
                           onClick={() => handleEditClick(item.productId, item.weight || 0)}
                           className={styles.editButton}
                           title="Edit weight"
+                        >
+                          ✏️
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className={styles.weightSection}>
+                    {editingItemId === item.productId ? (
+                      <div className={styles.editWeightContainer}>
+                        <input
+                          type="number"
+                          value={editQuantity}
+                          onChange={(e) => setEditQuantity(e.target.value)}
+                          className={styles.weightInput}
+                          placeholder="Number of bags"
+                          min="1"
+                          max="100"
+                        />
+                        <button
+                          onClick={() => handleWeightUpdate(item.productId, false)}
+                          className={styles.saveButton}
+                        >
+                          ✓
+                        </button>
+                        <button
+                          onClick={handleCancelEdit}
+                          className={styles.cancelButton}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.weightDisplay}>
+                        <span className={styles.itemWeight}>
+                          Quantity: {item.quantity} {item.quantity === 1 ? 'bag' : 'bags'}
+                        </span>
+                        <button
+                          onClick={() => handleEditClick(item.productId, 0, item.quantity)}
+                          className={styles.editButton}
+                          title="Edit quantity"
                         >
                           ✏️
                         </button>

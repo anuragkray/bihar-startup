@@ -48,10 +48,10 @@ const shopData: Record<string, any> = {
       },
       {
         id: 4,
-        name: "Sugarcane",
-        price: "₹2.5/Kg",
+        name: "Sugarcane Seeds",
+        price: "₹3.0/Kg",
         image: "",
-        description: "Mixed vegetable seeds pack",
+        description: "Sugarcane seeds bundle",
       },
       {
         id: 5,
@@ -76,14 +76,15 @@ const shopData: Record<string, any> = {
       {
         id: 1,
         name: "Urea",
-        price: "₹600/bag",
+        price: "₹267-bag/45kg",
         image: "",
-        description: "High nitrogen content fertilizer for enhanced crop growth",
+        description:
+          "High nitrogen content fertilizer for enhanced crop growth",
       },
       {
         id: 2,
         name: "Potash",
-        price: "₹900/bag",
+        price: "₹630-bag/50kg",
         image: "",
         description: "Potassium-rich fertilizer for improved crop quality",
       },
