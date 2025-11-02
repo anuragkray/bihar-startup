@@ -69,18 +69,18 @@ const Header = () => {
   // Get user initials for avatar
   const getUserInitials = () => {
     if (!user?.name) return "U";
-    const names = user.name.split(" ");
+    const names = user.name.trim().split(" ").filter(n => n.length > 0);
     if (names.length >= 2) {
-      return names[0][0] + names[1][0];
+      return (names[0][0] + names[1][0]).toUpperCase();
     }
-    return names[0][0];
+    return names[0][0].toUpperCase();
   };
 
   return (
     <>
       <header className={styles.header}>
         <div className={styles.left}>
-          <button 
+          <button
             className={styles.hamburgerButton}
             onClick={() => setIsSidebarOpen(true)}
             aria-label="Open menu"
@@ -98,13 +98,20 @@ const Header = () => {
               {bagCount > 0 && <span className={styles.badge}>{bagCount}</span>}
             </Link>
           ) : (
-            <div className={styles.cartContainer} onClick={() => setShowAuthModal(true)} style={{ cursor: 'pointer' }}>
+            <div
+              className={styles.cartContainer}
+              onClick={() => setShowAuthModal(true)}
+              style={{ cursor: "pointer" }}
+            >
               <FaShoppingCart className={styles.icon} />
             </div>
           )}
 
           <div className={styles.userSection}>
-            <div className={styles.userIconContainer} onClick={handleUserIconClick}>
+            <div
+              className={styles.userIconContainer}
+              onClick={handleUserIconClick}
+            >
               {isAuthenticated && user ? (
                 <>
                   {user.profilePhoto ? (
@@ -118,7 +125,9 @@ const Header = () => {
                   ) : (
                     <div className={styles.avatar}>{getUserInitials()}</div>
                   )}
-                  <span className={styles.userName}>{user.name.split(" ")[0]}</span>
+                  <span className={styles.userName}>
+                    {user.name.split(" ")[0]}
+                  </span>
                 </>
               ) : (
                 <>
@@ -130,10 +139,18 @@ const Header = () => {
 
             {showUserMenu && isAuthenticated && (
               <div className={styles.userMenu}>
-                <Link href="/profile" className={styles.menuItem} onClick={() => setShowUserMenu(false)}>
+                <Link
+                  href="/profile"
+                  className={styles.menuItem}
+                  onClick={() => setShowUserMenu(false)}
+                >
                   My Profile
                 </Link>
-                <Link href="/orders" className={styles.menuItem} onClick={() => setShowUserMenu(false)}>
+                <Link
+                  href="/orders"
+                  className={styles.menuItem}
+                  onClick={() => setShowUserMenu(false)}
+                >
                   My Orders
                 </Link>
                 <button onClick={handleLogout} className={styles.menuItem}>
@@ -145,8 +162,14 @@ const Header = () => {
         </div>
       </header>
 
-      <MobileSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <MobileSidebar
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </>
   );
 };

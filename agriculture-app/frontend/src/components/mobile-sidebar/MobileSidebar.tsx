@@ -36,11 +36,11 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
   // Get user initials for avatar
   const getUserInitials = () => {
     if (!user?.name) return "U";
-    const names = user.name.split(" ");
+    const names = user.name.trim().split(" ").filter(n => n.length > 0);
     if (names.length >= 2) {
-      return names[0][0] + names[1][0];
+      return (names[0][0] + names[1][0]).toUpperCase();
     }
-    return names[0][0];
+    return names[0][0].toUpperCase();
   };
 
   const menuItems = [

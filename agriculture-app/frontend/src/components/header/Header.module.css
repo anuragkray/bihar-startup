@@ -39,8 +39,10 @@
 }
 
 .title {
-  font-size: 20px;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
   margin: 0;
+  font-weight: 500;
+  letter-spacing: 1px;
 }
 
 .right {
@@ -167,7 +169,7 @@
   }
 
   .title {
-    font-size: 18px;
+    font-size: clamp(1.25rem, 5vw, 1.75rem);
   }
 
   .icon {
