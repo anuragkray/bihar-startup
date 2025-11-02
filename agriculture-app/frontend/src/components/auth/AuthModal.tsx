@@ -241,7 +241,7 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
         <div className={styles.switchMode}>
           {currentMode === "login" ? (
             <p>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <button onClick={() => setCurrentMode("register")}>
                 Register here
               </button>
