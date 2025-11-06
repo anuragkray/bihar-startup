@@ -13,7 +13,7 @@
 }
 
 .modalContent {
-  background: white;
+  background: linear-gradient(to right, #4A9D17, #1A3708);
   border-radius: 16px;
   padding: 2rem;
   max-width: 500px;
@@ -21,7 +21,7 @@
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
 }
 
 .closeButton {
@@ -32,7 +32,7 @@
   border: none;
   font-size: 2rem;
   cursor: pointer;
-  color: #718096;
+  color: white;
   line-height: 1;
   padding: 0;
   width: 32px;
@@ -45,19 +45,19 @@
 }
 
 .closeButton:hover {
-  background-color: #f7fafc;
-  color: #2d3748;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .title {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #2d3748;
+  color: white;
   margin-bottom: 0.5rem;
 }
 
 .subtitle {
-  color: #718096;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 1.5rem;
 }
 
@@ -85,7 +85,7 @@
 
 .formGroup label {
   font-weight: 600;
-  color: #2d3748;
+  color: white;
   font-size: 0.875rem;
 }
 
@@ -99,8 +99,8 @@
 
 .formGroup input:focus {
   outline: none;
-  border-color: #48bb78;
-  box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+  border-color: #4A9D17;
+  box-shadow: 0 0 0 3px rgba(74, 157, 23, 0.3);
 }
 
 .formRow {
@@ -112,19 +112,21 @@
 .submitButton {
   width: 100%;
   padding: 0.875rem;
-  background-color: #000000;
-  color: white;
+  background: white;
+  color: #1A3708;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.3s;
   margin-top: 0.5rem;
 }
 
 .submitButton:hover:not(:disabled) {
-  background-color: #333333;
+  background: rgba(255, 255, 255, 0.9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .submitButton:disabled {
@@ -136,25 +138,25 @@
   text-align: center;
   margin-top: 1.5rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .switchMode p {
-  color: #718096;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 0.875rem;
 }
 
 .switchMode button {
   background: none;
   border: none;
-  color: #48bb78;
-  font-weight: 600;
+  color: white;
+  font-weight: 700;
   cursor: pointer;
   text-decoration: underline;
 }
 
 .switchMode button:hover {
-  color: #38a169;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .note {
