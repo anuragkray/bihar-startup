@@ -1,6 +1,6 @@
-import Carousel from "./(dashboard-molecules)/dashboard-carousel/Carousel";
-import ShopContainer from "./(dashboard-molecules)/shops/ShopContainer";
-import Slogan from "./(dashboard-molecules)/slogan/Slogan";
+import Carousel from "../../components/dashboard/dashboard-carousel/Carousel";
+import ShopContainer from "../../components/dashboard/shops/ShopContainer";
+import Slogan from "../../components/dashboard/slogan/Slogan";
 import { redirect } from "next/navigation";
 
 const KMAgriDashboard = () => {
