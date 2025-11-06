@@ -5,6 +5,7 @@ import styles from "./Header.module.css";
 import { FaBars, FaShoppingCart, FaUserCircle } from "react-icons/fa";
 import { useState, useEffect, useRef } from "react";
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/common";
 import AuthModal from "@/components/auth/AuthModal";
 import MobileSidebar from "@/components/mobile-sidebar/MobileSidebar";
 
@@ -171,9 +172,9 @@ const Header = () => {
                 >
                   My Orders
                 </Link>
-                <button onClick={handleLogout} className={styles.menuItem}>
+                <Button onClick={handleLogout} variant="danger" size="small" fullWidth>
                   Logout
-                </button>
+                </Button>
               </div>
             )}
           </div>

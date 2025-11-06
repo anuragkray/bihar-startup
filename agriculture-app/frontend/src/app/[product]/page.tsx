@@ -4,6 +4,7 @@ import styles from "./shop.module.css";
 import Link from "next/link";
 import Image from "next/image";
 import Breadcrumb from "@/components/breadcrumb/Breadcrumb";
+import { Button } from "@/components/common";
 
 // Helper function to get image URLs from API (returns array of images)
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -330,7 +331,7 @@ const ProductCard = ({
             {product.price}
           </span>
           <Link href={`/${shopCategory}/${product.id}`}>
-            <button className={styles.buyButton}>Purchase</button>
+            <Button variant="primary" size="small">Purchase</Button>
           </Link>
         </div>
       </div>

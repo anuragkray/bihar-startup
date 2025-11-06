@@ -6,6 +6,7 @@ import { useUser } from '@/context/UserContext';
 import { useCart } from '@/hooks/useCart';
 import Link from 'next/link';
 import { toast } from 'react-toastify';
+import { Button, Input } from '@/components/common';
 import styles from './cart.module.css';
 
 export default function CartPage() {
@@ -148,9 +149,9 @@ export default function CartPage() {
       <div className={styles.container}>
       <div className={styles.header}>
         <h1 className={styles.title}>Shopping Cart ({itemCount} items)</h1>
-        <button onClick={handleClearCart} className={styles.clearButton}>
+        <Button onClick={handleClearCart} variant="danger" size="medium">
           Clear Cart
-        </button>
+        </Button>
       </div>
 
       <div className={styles.cartContent}>
@@ -166,27 +167,29 @@ export default function CartPage() {
                   <div className={styles.weightSection}>
                     {editingItemId === item.productId ? (
                       <div className={styles.editWeightContainer}>
-                        <input
+                        <Input
                           type="number"
                           value={editWeight}
                           onChange={(e) => setEditWeight(e.target.value)}
-                          className={styles.weightInput}
                           placeholder="Weight (kg)"
                           min="1"
                           max="50"
+                          size="small"
                         />
-                        <button
+                        <Button
                           onClick={() => handleWeightUpdate(item.productId, true)}
-                          className={styles.saveButton}
+                          variant="success"
+                          size="small"
                         >
                           ✓
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={handleCancelEdit}
-                          className={styles.cancelButton}
+                          variant="danger"
+                          size="small"
                         >
                           ✕
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       <div className={styles.weightDisplay}>
@@ -207,27 +210,29 @@ export default function CartPage() {
                   <div className={styles.weightSection}>
                     {editingItemId === item.productId ? (
                       <div className={styles.editWeightContainer}>
-                        <input
+                        <Input
                           type="number"
                           value={editQuantity}
                           onChange={(e) => setEditQuantity(e.target.value)}
-                          className={styles.weightInput}
                           placeholder="Number of bags"
                           min="1"
                           max="100"
+                          size="small"
                         />
-                        <button
+                        <Button
                           onClick={() => handleWeightUpdate(item.productId, false)}
-                          className={styles.saveButton}
+                          variant="success"
+                          size="small"
                         >
                           ✓
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           onClick={handleCancelEdit}
-                          className={styles.cancelButton}
+                          variant="danger"
+                          size="small"
                         >
                           ✕
-                        </button>
+                        </Button>
                       </div>
                     ) : (
                       <div className={styles.weightDisplay}>
@@ -258,12 +263,13 @@ export default function CartPage() {
                   </span>
                 </div>
 
-                <button
+                <Button
                   onClick={() => handleRemove(item.productId)}
-                  className={styles.removeButton}
+                  variant="danger"
+                  size="small"
                 >
                   Remove
-                </button>
+                </Button>
               </div>
             </div>
           ))}
@@ -292,9 +298,9 @@ export default function CartPage() {
             <span className={styles.totalValue}>₹{totalAmount.toLocaleString()}</span>
           </div>
           
-          <button className={styles.checkoutButton}>
+          <Button variant="primary" size="large" fullWidth>
             Proceed to Checkout
-          </button>
+          </Button>
           
           <Link href="/km-agri-dashboard" className={styles.continueShoppingLink}>
             Continue Shopping

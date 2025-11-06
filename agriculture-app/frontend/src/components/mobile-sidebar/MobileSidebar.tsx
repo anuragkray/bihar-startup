@@ -5,6 +5,7 @@ import Image from "next/image";
 import styles from "./MobileSidebar.module.css";
 import { FaTimes, FaHome, FaSeedling, FaTractor, FaTools, FaWater, FaFlask, FaShoppingCart, FaUser, FaClipboardList, FaSignOutAlt } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/common";
 
 interface MobileSidebarProps {
   isOpen: boolean;
@@ -127,10 +128,10 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
               <FaClipboardList className={styles.actionIcon} />
               <span>My Orders</span>
             </Link>
-            <button className={styles.actionItem} onClick={handleLogout}>
+            <Button onClick={handleLogout} variant="danger" size="small" fullWidth>
               <FaSignOutAlt className={styles.actionIcon} />
               <span>Logout</span>
-            </button>
+            </Button>
           </div>
         )}
       </div>

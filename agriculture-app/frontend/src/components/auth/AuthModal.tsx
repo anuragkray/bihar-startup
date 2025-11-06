@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useUserActions } from '@/hooks/useUsers';
 import { useUser } from '@/context/UserContext';
 import { toast } from 'react-toastify';
+import { Button, Input } from '@/components/common';
 import styles from './AuthModal.module.css';
 
 interface AuthModalProps {
@@ -124,118 +125,109 @@ export default function AuthModal({ isOpen, onClose, mode = 'login' }: AuthModal
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {currentMode === "register" && (
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Full Name *</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="Enter your full name"
-                required
-              />
-            </div>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              label="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your full name"
+              required
+              fullWidth
+            />
           )}
 
-          <div className={styles.formGroup}>
-            <label htmlFor="email">Email *</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="your.email@example.com"
-              required
-            />
-          </div>
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            label="Email"
+            value={formData.email}
+            onChange={handleChange}
+            placeholder="your.email@example.com"
+            required
+            fullWidth
+          />
 
           {currentMode === "register" && (
-            <div className={styles.formGroup}>
-              <label htmlFor="phone">Phone Number *</label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                value={formData.phone}
-                onChange={handleChange}
-                placeholder="10-digit mobile number"
-                pattern="[0-9]{10}"
-                required
-              />
-            </div>
+            <Input
+              type="tel"
+              id="phone"
+              name="phone"
+              label="Phone Number"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="10-digit mobile number"
+              pattern="[0-9]{10}"
+              required
+              fullWidth
+            />
           )}
 
           {currentMode === "login" && (
-            <div className={styles.formGroup}>
-              <label htmlFor="password">Password *</label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter your password"
-                required
-              />
-            </div>
+            <Input
+              type="password"
+              id="password"
+              name="password"
+              label="Password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              required
+              fullWidth
+            />
           )}
 
           {currentMode === "register" && (
             <>
-              <div className={styles.formGroup}>
-                <label htmlFor="street">Street Address</label>
-                <input
-                  type="text"
-                  id="street"
-                  name="street"
-                  value={formData.street}
-                  onChange={handleChange}
-                  placeholder="House no., Street name"
-                />
-              </div>
+              <Input
+                type="text"
+                id="street"
+                name="street"
+                label="Street Address"
+                value={formData.street}
+                onChange={handleChange}
+                placeholder="House no., Street name"
+                fullWidth
+              />
 
               <div className={styles.formRow}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="city">City</label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                    placeholder="City"
-                  />
-                </div>
+                <Input
+                  type="text"
+                  id="city"
+                  name="city"
+                  label="City"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder="City"
+                  fullWidth
+                />
 
-                <div className={styles.formGroup}>
-                  <label htmlFor="pincode">Pincode</label>
-                  <input
-                    type="text"
-                    id="pincode"
-                    name="pincode"
-                    value={formData.pincode}
-                    onChange={handleChange}
-                    placeholder="6-digit pincode"
-                    pattern="[0-9]{6}"
-                  />
-                </div>
+                <Input
+                  type="text"
+                  id="pincode"
+                  name="pincode"
+                  label="Pincode"
+                  value={formData.pincode}
+                  onChange={handleChange}
+                  placeholder="6-digit pincode"
+                  pattern="[0-9]{6}"
+                  fullWidth
+                />
               </div>
             </>
           )}
 
-          <button
+          <Button
             type="submit"
-            className={styles.submitButton}
+            variant="primary"
+            fullWidth
+            loading={loading}
             disabled={loading}
           >
-            {loading
-              ? "Please wait..."
-              : currentMode === "login"
-              ? "Login"
-              : "Create Account"}
-          </button>
+            {currentMode === "login" ? "Login" : "Create Account"}
+          </Button>
         </form>
 
         <div className={styles.switchMode}>

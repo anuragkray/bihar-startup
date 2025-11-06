@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useUserActions } from '@/hooks/useUsers';
 import { useRouter } from 'next/navigation';
+import { Button, Input, Select } from '@/components/common';
 import styles from './profile.module.css';
 
 export default function ProfilePage() {
@@ -135,130 +136,128 @@ export default function ProfilePage() {
           <div className={styles.section}>
             <h2 className={styles.sectionTitle}>Personal Information</h2>
 
-            <div className={styles.formGroup}>
-              <label htmlFor="name">Full Name *</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                required
-              />
-            </div>
+            <Input
+              type="text"
+              id="name"
+              name="name"
+              label="Full Name"
+              value={formData.name}
+              onChange={handleChange}
+              required
+              fullWidth
+            />
 
             <div className={styles.formRow}>
-              <div className={styles.formGroup}>
-                <label htmlFor="email">Email *</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label htmlFor="phone">Phone *</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  pattern="[0-9]{10}"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="profilePhoto">Profile Photo URL</label>
-              <input
-                type="url"
-                id="profilePhoto"
-                name="profilePhoto"
-                value={formData.profilePhoto}
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                label="Email"
+                value={formData.email}
                 onChange={handleChange}
-                placeholder="https://example.com/photo.jpg"
+                required
+                fullWidth
+              />
+
+              <Input
+                type="tel"
+                id="phone"
+                name="phone"
+                label="Phone"
+                value={formData.phone}
+                onChange={handleChange}
+                pattern="[0-9]{10}"
+                required
+                fullWidth
               />
             </div>
+
+            <Input
+              type="url"
+              id="profilePhoto"
+              name="profilePhoto"
+              label="Profile Photo URL"
+              value={formData.profilePhoto}
+              onChange={handleChange}
+              placeholder="https://example.com/photo.jpg"
+              fullWidth
+            />
           </div>
 
           <div className={styles.section}>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Saved Addresses</h2>
-              <button
+              <Button
                 type="button"
                 onClick={() => setShowAddressForm(!showAddressForm)}
-                className={styles.addButton}
+                variant="secondary"
+                size="small"
               >
                 {showAddressForm ? 'Cancel' : '+ Add Address'}
-              </button>
+              </Button>
             </div>
 
             {showAddressForm && (
               <div className={styles.addressForm}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="type">Address Type</label>
-                  <select
-                    id="type"
-                    name="type"
-                    value={newAddress.type}
-                    onChange={handleAddressChange}
-                  >
-                    <option value="home">Home</option>
-                    <option value="work">Work</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
+                <Select
+                  id="type"
+                  name="type"
+                  label="Address Type"
+                  value={newAddress.type}
+                  onChange={handleAddressChange}
+                  options={[
+                    { value: 'home', label: 'Home' },
+                    { value: 'work', label: 'Work' },
+                    { value: 'other', label: 'Other' },
+                  ]}
+                  fullWidth
+                />
 
-                <div className={styles.formGroup}>
-                  <label htmlFor="street">Street Address *</label>
-                  <input
+                <Input
+                  type="text"
+                  id="street"
+                  name="street"
+                  label="Street Address"
+                  value={newAddress.street}
+                  onChange={handleAddressChange}
+                  placeholder="House no., Street name"
+                  required
+                  fullWidth
+                />
+
+                <div className={styles.formRow}>
+                  <Input
                     type="text"
-                    id="street"
-                    name="street"
-                    value={newAddress.street}
+                    id="city"
+                    name="city"
+                    label="City"
+                    value={newAddress.city}
                     onChange={handleAddressChange}
-                    placeholder="House no., Street name"
+                    required
+                    fullWidth
+                  />
+
+                  <Input
+                    type="text"
+                    id="pincode"
+                    name="pincode"
+                    label="Pincode"
+                    value={newAddress.pincode}
+                    onChange={handleAddressChange}
+                    pattern="[0-9]{6}"
+                    required
+                    fullWidth
                   />
                 </div>
 
-                <div className={styles.formRow}>
-                  <div className={styles.formGroup}>
-                    <label htmlFor="city">City *</label>
-                    <input
-                      type="text"
-                      id="city"
-                      name="city"
-                      value={newAddress.city}
-                      onChange={handleAddressChange}
-                    />
-                  </div>
-
-                  <div className={styles.formGroup}>
-                    <label htmlFor="pincode">Pincode *</label>
-                    <input
-                      type="text"
-                      id="pincode"
-                      name="pincode"
-                      value={newAddress.pincode}
-                      onChange={handleAddressChange}
-                      pattern="[0-9]{6}"
-                    />
-                  </div>
-                </div>
-
-                <button
+                <Button
                   type="button"
                   onClick={handleAddAddress}
-                  className={styles.saveAddressButton}
+                  variant="secondary"
+                  fullWidth
                 >
                   Save Address
-                </button>
+                </Button>
               </div>
             )}
 
@@ -277,30 +276,32 @@ export default function ProfilePage() {
                   </p>
                   <div className={styles.addressActions}>
                     {!address.isDefault && (
-                      <button
+                      <Button
                         type="button"
                         onClick={() => handleSetDefaultAddress(index)}
-                        className={styles.setDefaultButton}
+                        variant="outline"
+                        size="small"
                       >
                         Set as Default
-                      </button>
+                      </Button>
                     )}
-                    <button
+                    <Button
                       type="button"
                       onClick={() => handleRemoveAddress(index)}
-                      className={styles.removeButton}
+                      variant="danger"
+                      size="small"
                     >
                       Remove
-                    </button>
+                    </Button>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <button type="submit" className={styles.submitButton} disabled={loading}>
-            {loading ? 'Updating...' : 'Update Profile'}
-          </button>
+          <Button type="submit" variant="primary" fullWidth loading={loading} disabled={loading}>
+            Update Profile
+          </Button>
         </form>
       </div>
     </div>
