@@ -42,7 +42,7 @@ export interface IUser extends Document {
   name: string;
   email?: string; // Optional
   phone: string; // Required
-  password?: string; // Optional for now, will be used later with authentication
+  password?: string; // Password (hashed)
   profilePhoto?: string;
   role: 'customer' | 'admin' | 'vendor';
   addresses: IAddress[];
@@ -58,6 +58,8 @@ export interface IUser extends Document {
   otpExpiry?: Date; // OTP expiration time
   createdAt: Date;
   updatedAt: Date;
+  // Methods
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 // API Response Types

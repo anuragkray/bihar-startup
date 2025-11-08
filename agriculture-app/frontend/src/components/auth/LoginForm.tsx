@@ -106,7 +106,7 @@ export default function LoginForm({ onClose, onSwitchToRegister, onSwitchToOTP }
       <form onSubmit={handleSubmit} className={styles.form}>
         <div>
           <Input
-            type="email"
+            type="text"
             id="email"
             name="email"
             label="Email or Phone"

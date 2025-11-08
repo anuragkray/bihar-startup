@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import connectDB from '@/lib/mongodb';
 import User from '@/models/User';
 
@@ -77,10 +78,10 @@ export async function POST(request: NextRequest) {
       query.phone = cleanPhone;
     }
 
-    // Find user
-    const user = await User.findOne(query);
+    // Find user and include password field for verification
+    const user = await User.findOne(query).select('+password');
 
-    if (!user) {
+    if (!user || !user.password) {
       const response: ApiResponse = {
         success: false,
         message: 'Invalid credentials',
@@ -88,21 +89,16 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(response, { status: 401 });
     }
 
-    // TODO: Implement proper password verification
-    // In production, you should:
-    // 1. Store password hashes (using bcrypt) in the User model
-    // 2. Compare the provided password with the stored hash
-    // 3. Use secure session management (JWT tokens, etc.)
-    // 
-    // Example with bcrypt:
-    // const isPasswordValid = await bcrypt.compare(password, user.password);
-    // if (!isPasswordValid) {
-    //   return NextResponse.json({ success: false, message: 'Invalid credentials' }, { status: 401 });
-    // }
-
-    // For now, we're returning the user without actual password verification
-    // This is NOT secure and should be replaced with proper authentication
-    console.log('WARNING: Password verification not implemented. User logged in without password check.');
+    // Verify password using bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (!isPasswordValid) {
+      const response: ApiResponse = {
+        success: false,
+        message: 'Invalid credentials',
+      };
+      return NextResponse.json(response, { status: 401 });
+    }
 
     const response: ApiResponse = {
       success: true,

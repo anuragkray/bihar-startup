@@ -17,6 +17,8 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
     name: '',
     email: '',
     phone: '',
+    password: '',
+    confirmPassword: '',
     address: '',
     city: '',
     state: 'Bihar',
@@ -26,6 +28,8 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
     name?: string;
     email?: string;
     phone?: string;
+    password?: string;
+    confirmPassword?: string;
     address?: string;
     city?: string;
     pincode?: string;
@@ -70,6 +74,18 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
     return null;
   };
 
+  const validatePassword = (password: string): string | null => {
+    if (!password) return "Password is required";
+    if (password.length < 6) return "Password must be at least 6 characters";
+    return null;
+  };
+
+  const validateConfirmPassword = (password: string, confirmPassword: string): string | null => {
+    if (!confirmPassword) return "Please confirm your password";
+    if (password !== confirmPassword) return "Passwords do not match";
+    return null;
+  };
+
   const validatePincode = (pincode: string): string | null => {
     if (!pincode.trim()) return "Pincode is required";
     if (!/^[0-9]{6}$/.test(pincode))
@@ -99,6 +115,12 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
     const cityError = validateCity(formData.city);
     if (cityError) newErrors.city = cityError;
 
+    const passwordError = validatePassword(formData.password);
+    if (passwordError) newErrors.password = passwordError;
+
+    const confirmPasswordError = validateConfirmPassword(formData.password, formData.confirmPassword);
+    if (confirmPasswordError) newErrors.confirmPassword = confirmPasswordError;
+
     const pincodeError = validatePincode(formData.pincode);
     if (pincodeError) newErrors.pincode = pincodeError;
 
@@ -107,11 +129,12 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
       return;
     }
 
-    // Create user
+    // Create user with password
     const newUser = await createUser({
       name: formData.name,
       phone: formData.phone,
       email: formData.email || undefined,
+      password: formData.password,
       address: {
         type: "home",
         address: formData.address,
@@ -123,16 +146,8 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
     });
 
     if (newUser) {
-      try {
-        await login(newUser);
-        toast.success("Registration successful!");
-        onClose();
-      } catch (err) {
-        setErrors({
-          general:
-            "Login failed after registration. Please try logging in manually.",
-        });
-      }
+      toast.success("Registration successful! Please login with your credentials.");
+      onSwitchToLogin();
     } else {
       setErrors({
         general: "Registration failed. Phone number may already exist.",
@@ -211,6 +226,40 @@ export default function RegisterForm({ onClose, onSwitchToLogin }: RegisterFormP
           />
           {errors.email && (
             <div className={styles.fieldError}>{errors.email}</div>
+          )}
+        </div>
+
+        <div>
+          <Input
+            type="password"
+            id="password"
+            name="password"
+            label="Password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Minimum 6 characters"
+            required
+            fullWidth
+          />
+          {errors.password && (
+            <div className={styles.fieldError}>{errors.password}</div>
+          )}
+        </div>
+
+        <div>
+          <Input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            label="Confirm Password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Re-enter your password"
+            required
+            fullWidth
+          />
+          {errors.confirmPassword && (
+            <div className={styles.fieldError}>{errors.confirmPassword}</div>
           )}
         </div>
 

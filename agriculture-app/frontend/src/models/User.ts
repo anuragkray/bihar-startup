@@ -1,4 +1,5 @@
 import mongoose, { Schema, Model } from 'mongoose';
+import bcrypt from 'bcryptjs';
 import { IUser, IAddress, ICartItem, IPurchaseHistory } from '@/types/user';
 
 // Address Schema
@@ -162,6 +163,8 @@ const UserSchema = new Schema<IUser>(
     },
     password: {
       type: String,
+      required: [true, 'Password is required'],
+      minlength: [6, 'Password must be at least 6 characters long'],
       select: false, // Don't return password by default
     },
     profilePhoto: {
@@ -225,8 +228,15 @@ const UserSchema = new Schema<IUser>(
 UserSchema.index({ role: 1 });
 UserSchema.index({ isActive: 1 });
 
-// Pre-save middleware to ensure only one default address
-UserSchema.pre('save', function (next) {
+// Pre-save middleware to hash password and ensure only one default address
+UserSchema.pre('save', async function (next) {
+  // Hash password if it's modified
+  if (this.isModified('password') && this.password) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+
+  // Ensure only one default address
   if (this.addresses && this.addresses.length > 0) {
     const defaultAddresses = this.addresses.filter((addr) => addr.isDefault);
     if (defaultAddresses.length > 1) {
@@ -240,6 +250,11 @@ UserSchema.pre('save', function (next) {
   }
   next();
 });
+
+// Method to compare password
+UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+  return await bcrypt.compare(candidatePassword, this.password);
+};
 
 // Method to add item to cart
 UserSchema.methods.addToCart = function (item: ICartItem) {

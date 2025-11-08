@@ -89,7 +89,9 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
             )}
             <div className={styles.userInfo}>
               <h3 className={styles.userName}>{user.name}</h3>
-              <p className={styles.userEmail}>{user.email}</p>
+              <p className={styles.userSince}>
+                Since {user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear()}
+              </p>
             </div>
           </div>
         ) : (
@@ -128,10 +130,10 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
               <FaClipboardList className={styles.actionIcon} />
               <span>My Orders</span>
             </Link>
-            <Button onClick={handleLogout} variant="danger" size="small" fullWidth>
+            <button onClick={handleLogout} className={styles.logoutButton}>
               <FaSignOutAlt className={styles.actionIcon} />
               <span>Logout</span>
-            </Button>
+            </button>
           </div>
         )}
       </div>

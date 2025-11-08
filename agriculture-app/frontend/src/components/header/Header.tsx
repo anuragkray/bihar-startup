@@ -172,9 +172,9 @@ const Header = () => {
                 >
                   My Orders
                 </Link>
-                <Button onClick={handleLogout} variant="danger" size="small" fullWidth>
+                <button onClick={handleLogout} className={styles.logoutButton}>
                   Logout
-                </Button>
+                </button>
               </div>
             )}
           </div>

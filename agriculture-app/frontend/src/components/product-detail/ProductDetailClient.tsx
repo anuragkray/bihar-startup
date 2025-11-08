@@ -8,6 +8,7 @@ import { useCart } from '@/hooks/useCart';
 import { toast } from 'react-toastify';
 import Breadcrumb from '@/components/common/km-agri-breadcrumb/Breadcrumb';
 import { Button, Input, Select } from '@/components/common';
+import AuthModal from '@/components/auth/AuthModal';
 import styles from './ProductDetailClient.module.css';
 
 async function fetchImageUrls(productName: string): Promise<string[]> {
@@ -38,6 +39,7 @@ export default function ProductDetailClient({ product, productId, productData }:
   const [useDropdown, setUseDropdown] = useState<boolean>(true);
   const [loading, setLoading] = useState(true);
   const [addingToCart, setAddingToCart] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   const isFertilizerProduct = product === 'fertilizer-shop';
 
@@ -87,7 +89,7 @@ export default function ProductDetailClient({ product, productId, productData }:
 
   const handleAddToBag = async () => {
     if (!isAuthenticated) {
-      toast.error('Please login to add items to cart');
+      setIsAuthModalOpen(true);
       return;
     }
 
@@ -299,6 +301,12 @@ export default function ProductDetailClient({ product, productId, productData }:
           </div>
         </div>
       </div>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        mode="login"
+      />
     </div>
   );
 }

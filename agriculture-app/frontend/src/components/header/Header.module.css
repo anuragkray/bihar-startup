@@ -167,6 +167,25 @@
   background-color: #f7fafc;
 }
 
+.logoutButton {
+  display: block;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  background: #f56565;
+  border: none;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-family: inherit;
+}
+
+.logoutButton:hover {
+  background-color: #e53e3e;
+}
+
 @media (max-width: 768px) {
   .hamburgerButton {
     display: flex;
@@ -177,15 +196,15 @@
   }
 
   .icon {
-    font-size: 20px;
+    font-size: 28px;
   }
 
   .badge {
-    width: 18px;
-    height: 18px;
-    font-size: 10px;
-    top: -6px;
-    right: -6px;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    top: -8px;
+    right: -8px;
   }
 
   .userName,
@@ -194,8 +213,13 @@
   }
 
   .avatar {
-    width: 32px;
-    height: 32px;
-    font-size: 0.875rem;
+    width: 44px;
+    height: 44px;
+    font-size: 1.125rem;
+  }
+
+  .profilePhoto {
+    width: 44px;
+    height: 44px;
   }
 }
