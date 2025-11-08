@@ -22,7 +22,7 @@ export default function ProfileClient() {
   const [addresses, setAddresses] = useState<any[]>([]);
   const [newAddress, setNewAddress] = useState({
     type: 'home' as 'home' | 'work' | 'other',
-    street: '',
+    address: '',
     city: '',
     state: 'Bihar',
     pincode: '',
@@ -85,7 +85,7 @@ export default function ProfileClient() {
   };
 
   const handleAddAddress = () => {
-    if (!newAddress.street || !newAddress.city || !newAddress.pincode) {
+    if (!newAddress.address || !newAddress.city || !newAddress.pincode) {
       setMessage({ type: 'error', text: 'Please fill all address fields' });
       return;
     }
@@ -94,7 +94,7 @@ export default function ProfileClient() {
     setAddresses(updatedAddresses);
     setNewAddress({
       type: 'home',
-      street: '',
+      address: '',
       city: '',
       state: 'Bihar',
       pincode: '',
@@ -215,12 +215,12 @@ export default function ProfileClient() {
 
                 <Input
                   type="text"
-                  id="street"
-                  name="street"
-                  label="Street Address"
-                  value={newAddress.street}
+                  id="address"
+                  name="address"
+                  label="Address"
+                  value={newAddress.address}
                   onChange={handleAddressChange}
-                  placeholder="House no., Street name"
+                  placeholder="House no., Street name, Area"
                   required
                   fullWidth
                 />
@@ -269,7 +269,7 @@ export default function ProfileClient() {
                     {address.isDefault && <span className={styles.defaultBadge}>Default</span>}
                   </div>
                   <p className={styles.addressText}>
-                    {address.street}, {address.city}
+                    {address.address}, {address.city}
                   </p>
                   <p className={styles.addressText}>
                     {address.state} - {address.pincode}

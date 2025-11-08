@@ -10,7 +10,7 @@ const AddressSchema = new Schema<IAddress>(
       required: true,
       default: 'home',
     },
-    street: {
+    address: {
       type: String,
       required: true,
       trim: true,
@@ -144,8 +144,8 @@ const UserSchema = new Schema<IUser>(
     },
     email: {
       type: String,
-      required: [true, 'Email is required'],
       unique: true,
+      sparse: true, // Allows multiple null values
       lowercase: true,
       trim: true,
       match: [
@@ -206,6 +206,12 @@ const UserSchema = new Schema<IUser>(
       default: true,
     },
     lastLogin: {
+      type: Date,
+    },
+    otp: {
+      type: String,
+    },
+    otpExpiry: {
       type: Date,
     },
   },
