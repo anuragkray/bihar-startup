@@ -5,13 +5,15 @@ import Image from "next/image";
 import styles from "./MobileSidebar.module.css";
 import { FaTimes, FaHome, FaSeedling, FaTractor, FaTools, FaWater, FaFlask, FaShoppingCart, FaUser, FaClipboardList, FaSignOutAlt } from "react-icons/fa";
 import { useUser } from "@/context/UserContext";
+import { Button } from "@/components/common";
 
 interface MobileSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenAuthModal?: () => void;
 }
 
-const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
+const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, onOpenAuthModal }) => {
   const { user, isAuthenticated, logout } = useUser();
 
   // Prevent body scroll when sidebar is open
@@ -88,13 +90,29 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
             )}
             <div className={styles.userInfo}>
               <h3 className={styles.userName}>{user.name}</h3>
-              <p className={styles.userEmail}>{user.email}</p>
+              <p className={styles.userSince}>
+                Since {user.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear()}
+              </p>
             </div>
           </div>
         ) : (
           <div className={styles.guestProfile}>
             <FaUser className={styles.guestIcon} />
-            <p className={styles.guestText}>Please login to continue</p>
+            <button 
+              className={styles.loginButton}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Login button clicked!');
+                onClose();
+                setTimeout(() => {
+                  console.log('Opening auth modal...');
+                  onOpenAuthModal?.();
+                }, 1200);
+              }}
+            >
+              Please Login to Continue
+            </button>
           </div>
         )}
 
@@ -127,7 +145,7 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
               <FaClipboardList className={styles.actionIcon} />
               <span>My Orders</span>
             </Link>
-            <button className={styles.actionItem} onClick={handleLogout}>
+            <button onClick={handleLogout} className={styles.logoutButton}>
               <FaSignOutAlt className={styles.actionIcon} />
               <span>Logout</span>
             </button>

@@ -76,35 +76,66 @@ export async function POST(request: NextRequest) {
 
     const body: CreateUserRequest = await request.json();
 
-    // Validate required fields
-    if (!body.name || !body.email || !body.phone) {
+    // Validate required fields (name and phone are required, email is optional)
+    if (!body.name || !body.phone) {
       const response: ApiResponse = {
         success: false,
-        message: 'Name, email, and phone are required',
+        message: 'Name and phone are required',
       };
       return NextResponse.json(response, { status: 400 });
     }
 
-    // Check if user already exists
-    const existingUser = await User.findOne({
-      $or: [{ email: body.email }, { phone: body.phone }],
-    });
-
-    if (existingUser) {
+    // Validate phone format
+    if (!/^[0-9]{10}$/.test(body.phone)) {
       const response: ApiResponse = {
         success: false,
-        message: 'User with this email or phone already exists',
+        message: 'Please provide a valid 10-digit phone number',
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
+
+    // Validate email format if provided
+    if (body.email && !/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(body.email)) {
+      const response: ApiResponse = {
+        success: false,
+        message: 'Please provide a valid email address',
+      };
+      return NextResponse.json(response, { status: 400 });
+    }
+
+    // Check if user already exists by phone
+    const existingUserByPhone = await User.findOne({ phone: body.phone });
+    if (existingUserByPhone) {
+      const response: ApiResponse = {
+        success: false,
+        message: 'User with this phone number already exists',
       };
       return NextResponse.json(response, { status: 409 });
+    }
+
+    // Check if user already exists by email (if email provided)
+    if (body.email) {
+      const existingUserByEmail = await User.findOne({ email: body.email });
+      if (existingUserByEmail) {
+        const response: ApiResponse = {
+          success: false,
+          message: 'User with this email already exists',
+        };
+        return NextResponse.json(response, { status: 409 });
+      }
     }
 
     // Create user data
     const userData: any = {
       name: body.name,
-      email: body.email,
       phone: body.phone,
       role: body.role || 'customer',
     };
+
+    // Add email if provided
+    if (body.email) {
+      userData.email = body.email;
+    }
 
     // Add password if provided (will be hashed later when implementing auth)
     if (body.password) {
@@ -123,6 +154,8 @@ export async function POST(request: NextRequest) {
     const userResponse = user.toObject();
     delete userResponse.password;
     delete userResponse.refreshToken;
+    delete userResponse.otp;
+    delete userResponse.otpExpiry;
 
     const response: ApiResponse = {
       success: true,

@@ -69,6 +69,19 @@
   margin-bottom: 12px;
 }
 
+.footerLink {
+  color: #e0e0e0;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.footerLink:hover {
+  color: #a8d08d;
+  padding-left: 5px;
+}
+
 .footerLinks a {
   color: #e0e0e0;
   text-decoration: none;
@@ -142,7 +155,11 @@
   align-items: center;
   flex-wrap: wrap;
   font-size: 0.9rem;
-  color: #e0e0e0;
+  background-color: #ffd700;
+  color: #1a3708;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
 }
 
 .paymentMethods span {
