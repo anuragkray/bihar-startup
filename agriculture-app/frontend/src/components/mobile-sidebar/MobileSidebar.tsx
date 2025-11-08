@@ -10,9 +10,10 @@ import { Button } from "@/components/common";
 interface MobileSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenAuthModal?: () => void;
 }
 
-const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
+const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose, onOpenAuthModal }) => {
   const { user, isAuthenticated, logout } = useUser();
 
   // Prevent body scroll when sidebar is open
@@ -97,7 +98,21 @@ const MobileSidebar: React.FC<MobileSidebarProps> = ({ isOpen, onClose }) => {
         ) : (
           <div className={styles.guestProfile}>
             <FaUser className={styles.guestIcon} />
-            <p className={styles.guestText}>Please login to continue</p>
+            <button 
+              className={styles.loginButton}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Login button clicked!');
+                onClose();
+                setTimeout(() => {
+                  console.log('Opening auth modal...');
+                  onOpenAuthModal?.();
+                }, 1200);
+              }}
+            >
+              Please Login to Continue
+            </button>
           </div>
         )}
 

@@ -152,6 +152,15 @@ export default function ProductDetailClient({ product, productId, productData }:
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
   };
 
+  // Check if user has made a selection
+  const hasSelection = () => {
+    if (isFertilizerProduct) {
+      return bagQuantity !== '';
+    } else {
+      return weightInput !== '' || weightKg !== '';
+    }
+  };
+
   const formatShopName = (slug: string) => {
     return slug.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   };
@@ -287,16 +296,18 @@ export default function ProductDetailClient({ product, productId, productData }:
                 </>
               )}
 
-              <Button
-                onClick={handleAddToBag}
-                disabled={addingToCart || !isAuthenticated}
-                loading={addingToCart}
-                variant="primary"
-                size="large"
-                fullWidth
-              >
-                {!isAuthenticated ? 'Login to Add to Cart' : 'Add to Bag'}
-              </Button>
+              <div style={{ marginTop: '20px' }}>
+                <Button
+                  onClick={handleAddToBag}
+                  disabled={addingToCart || (isAuthenticated && !hasSelection())}
+                  loading={addingToCart}
+                  variant="primary"
+                  size="large"
+                  fullWidth
+                >
+                  {!isAuthenticated ? 'Login to Add to Cart' : 'Add to Bag'}
+                </Button>
+              </div>
             </div>
           </div>
         </div>
