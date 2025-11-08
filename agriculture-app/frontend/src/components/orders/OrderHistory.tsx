@@ -48,7 +48,9 @@ export default function OrderHistory({ userId }: OrderHistoryProps) {
           </div>
           <div className={styles.stat}>
             <span className={styles.statLabel}>Total Spent:</span>
-            <span className={styles.statValue}>₹{totalSpent.toLocaleString()}</span>
+            <span className={styles.statValue}>
+              ₹{totalSpent.toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
@@ -56,32 +58,42 @@ export default function OrderHistory({ userId }: OrderHistoryProps) {
       {/* Status Filter */}
       <div className={styles.filters}>
         <button
-          onClick={() => handleFilterChange('')}
-          className={`${styles.filterButton} ${!statusFilter ? styles.active : ''}`}
+          onClick={() => handleFilterChange("")}
+          className={`${styles.filterButton} ${
+            !statusFilter ? styles.active : ""
+          }`}
         >
           All
         </button>
         <button
-          onClick={() => handleFilterChange('pending')}
-          className={`${styles.filterButton} ${statusFilter === 'pending' ? styles.active : ''}`}
+          onClick={() => handleFilterChange("pending")}
+          className={`${styles.filterButton} ${
+            statusFilter === "pending" ? styles.active : ""
+          }`}
         >
           Pending
         </button>
         <button
-          onClick={() => handleFilterChange('processing')}
-          className={`${styles.filterButton} ${statusFilter === 'processing' ? styles.active : ''}`}
+          onClick={() => handleFilterChange("processing")}
+          className={`${styles.filterButton} ${
+            statusFilter === "processing" ? styles.active : ""
+          }`}
         >
           Processing
         </button>
         <button
-          onClick={() => handleFilterChange('shipped')}
-          className={`${styles.filterButton} ${statusFilter === 'shipped' ? styles.active : ''}`}
+          onClick={() => handleFilterChange("shipped")}
+          className={`${styles.filterButton} ${
+            statusFilter === "shipped" ? styles.active : ""
+          }`}
         >
           Shipped
         </button>
         <button
-          onClick={() => handleFilterChange('delivered')}
-          className={`${styles.filterButton} ${statusFilter === 'delivered' ? styles.active : ''}`}
+          onClick={() => handleFilterChange("delivered")}
+          className={`${styles.filterButton} ${
+            statusFilter === "delivered" ? styles.active : ""
+          }`}
         >
           Delivered
         </button>
@@ -101,14 +113,18 @@ export default function OrderHistory({ userId }: OrderHistoryProps) {
                 <div className={styles.orderInfo}>
                   <h3 className={styles.orderId}>Order #{order.orderId}</h3>
                   <p className={styles.orderDate}>
-                    {new Date(order.orderDate).toLocaleDateString('en-IN', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
+                    {new Date(order.orderDate).toLocaleDateString("en-IN", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
                     })}
                   </p>
                 </div>
-                <span className={`${styles.statusBadge} ${styles[getStatusColor(order.status)]}`}>
+                <span
+                  className={`${styles.statusBadge} ${
+                    styles[getStatusColor(order.status)]
+                  }`}
+                >
                   {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                 </span>
               </div>
@@ -116,9 +132,15 @@ export default function OrderHistory({ userId }: OrderHistoryProps) {
               <div className={styles.orderProducts}>
                 {order.products.map((product, index) => (
                   <div key={index} className={styles.product}>
-                    <span className={styles.productName}>{product.productName}</span>
-                    <span className={styles.productQuantity}>Qty: {product.quantity}</span>
-                    <span className={styles.productPrice}>₹{product.price.toLocaleString()}</span>
+                    <span className={styles.productName}>
+                      {product.productName}
+                    </span>
+                    <span className={styles.productQuantity}>
+                      Qty: {product.quantity}
+                    </span>
+                    <span className={styles.productPrice}>
+                      ₹{product.price.toLocaleString()}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -127,15 +149,19 @@ export default function OrderHistory({ userId }: OrderHistoryProps) {
                 <div className={styles.shippingAddress}>
                   <strong>Shipping Address:</strong>
                   <p>
-                    {order.shippingAddress.street}, {order.shippingAddress.city}
+                    {order.shippingAddress.address},{" "}
+                    {order.shippingAddress.city}
                   </p>
                   <p>
-                    {order.shippingAddress.state} - {order.shippingAddress.pincode}
+                    {order.shippingAddress.state} -{" "}
+                    {order.shippingAddress.pincode}
                   </p>
                 </div>
                 <div className={styles.orderTotal}>
                   <span className={styles.totalLabel}>Total Amount:</span>
-                  <span className={styles.totalAmount}>₹{order.totalAmount.toLocaleString()}</span>
+                  <span className={styles.totalAmount}>
+                    ₹{order.totalAmount.toLocaleString()}
+                  </span>
                 </div>
               </div>
 

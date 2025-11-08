@@ -1,0 +1,207 @@
+/* Input Wrapper */
+.inputWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputWrapper.fullWidth {
+  width: 100%;
+}
+
+/* Label */
+.label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.875rem;
+  display: block;
+}
+
+.required {
+  color: #f56565;
+  margin-left: 0.25rem;
+}
+
+/* Input Container */
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+/* Input Element */
+.input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #2d3748;
+  background-color: white;
+  transition: all 0.2s ease-in-out;
+}
+
+.input::placeholder {
+  color: #a0aec0;
+}
+
+.input:hover {
+  border-color: #cbd5e0;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #48bb78;
+  box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
+
+.input:disabled {
+  background-color: #f7fafc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Size Variants */
+.small {
+  padding: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.medium {
+  padding: 0.75rem;
+  font-size: 1rem;
+}
+
+.large {
+  padding: 1rem;
+  font-size: 1.125rem;
+}
+
+/* Input with Icons */
+.hasLeftIcon {
+  padding-left: 2.5rem;
+}
+
+.hasRightIcon {
+  padding-right: 2.5rem;
+}
+
+.hasLeftIcon.small {
+  padding-left: 2rem;
+}
+
+.hasRightIcon.small {
+  padding-right: 2rem;
+}
+
+.hasLeftIcon.large {
+  padding-left: 3rem;
+}
+
+.hasRightIcon.large {
+  padding-right: 3rem;
+}
+
+/* Icons */
+.leftIcon,
+.rightIcon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #718096;
+  pointer-events: none;
+}
+
+.leftIcon {
+  left: 0.75rem;
+}
+
+.rightIcon {
+  right: 0.75rem;
+}
+
+.input:focus ~ .leftIcon,
+.input:focus ~ .rightIcon {
+  color: #48bb78;
+}
+
+/* Error State */
+.input.error {
+  border-color: #f56565;
+}
+
+.input.error:focus {
+  border-color: #f56565;
+  box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1);
+}
+
+.input.error ~ .leftIcon,
+.input.error ~ .rightIcon {
+  color: #f56565;
+}
+
+/* Helper and Error Text */
+.helperText,
+.errorText {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.helperText {
+  color: #718096;
+}
+
+.errorText {
+  color: #f56565;
+}
+
+/* Full Width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .input {
+    font-size: 0.875rem;
+  }
+
+  .small {
+    padding: 0.375rem;
+    font-size: 0.75rem;
+  }
+
+  .medium {
+    padding: 0.625rem;
+    font-size: 0.875rem;
+  }
+
+  .large {
+    padding: 0.875rem;
+    font-size: 1rem;
+  }
+
+  .label {
+    font-size: 0.8125rem;
+  }
+
+  .hasLeftIcon {
+    padding-left: 2.25rem;
+  }
+
+  .hasRightIcon {
+    padding-right: 2.25rem;
+  }
+
+  .leftIcon {
+    left: 0.625rem;
+  }
+
+  .rightIcon {
+    right: 0.625rem;
+  }
+}

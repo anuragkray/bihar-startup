@@ -1,0 +1,157 @@
+/* Select Wrapper */
+.selectWrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.selectWrapper.fullWidth {
+  width: 100%;
+}
+
+/* Label */
+.label {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.875rem;
+  display: block;
+}
+
+.required {
+  color: #f56565;
+  margin-left: 0.25rem;
+}
+
+/* Select Container */
+.selectContainer {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+/* Select Element */
+.select {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  color: #2d3748;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.select:hover {
+  border-color: #cbd5e0;
+}
+
+.select:focus {
+  outline: none;
+  border-color: #48bb78;
+  box-shadow: 0 0 0 3px rgba(72, 187, 120, 0.1);
+}
+
+.select:disabled {
+  background-color: #f7fafc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Size Variants */
+.small {
+  padding: 0.5rem 2rem 0.5rem 0.5rem;
+  font-size: 0.875rem;
+}
+
+.medium {
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  font-size: 1rem;
+}
+
+.large {
+  padding: 1rem 3rem 1rem 1rem;
+  font-size: 1.125rem;
+}
+
+/* Error State */
+.select.error {
+  border-color: #f56565;
+}
+
+.select.error:focus {
+  border-color: #f56565;
+  box-shadow: 0 0 0 3px rgba(245, 101, 101, 0.1);
+}
+
+/* Select Icon */
+.selectIcon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #718096;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.select:focus ~ .selectIcon {
+  color: #48bb78;
+}
+
+.select.error ~ .selectIcon {
+  color: #f56565;
+}
+
+/* Helper and Error Text */
+.helperText,
+.errorText {
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.helperText {
+  color: #718096;
+}
+
+.errorText {
+  color: #f56565;
+}
+
+/* Full Width */
+.fullWidth {
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .select {
+    font-size: 0.875rem;
+  }
+
+  .small {
+    padding: 0.375rem 1.75rem 0.375rem 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .medium {
+    padding: 0.625rem 2.25rem 0.625rem 0.625rem;
+    font-size: 0.875rem;
+  }
+
+  .large {
+    padding: 0.875rem 2.75rem 0.875rem 0.875rem;
+    font-size: 1rem;
+  }
+
+  .label {
+    font-size: 0.8125rem;
+  }
+}

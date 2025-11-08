@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 // Address Interface
 export interface IAddress {
   type: 'home' | 'work' | 'other';
-  street: string;
+  address: string;
   city: string;
   state: string;
   pincode: string;
@@ -40,9 +40,9 @@ export interface IPurchaseHistory {
 // User Interface
 export interface IUser extends Document {
   name: string;
-  email: string;
-  phone: string;
-  password?: string; // Optional for now, will be used later with authentication
+  email?: string; // Optional
+  phone: string; // Required
+  password?: string; // Password (hashed)
   profilePhoto?: string;
   role: 'customer' | 'admin' | 'vendor';
   addresses: IAddress[];
@@ -54,8 +54,12 @@ export interface IUser extends Document {
   phoneVerified: boolean;
   isActive: boolean;
   lastLogin?: Date;
+  otp?: string; // For OTP verification
+  otpExpiry?: Date; // OTP expiration time
   createdAt: Date;
   updatedAt: Date;
+  // Methods
+  comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
 // API Response Types
@@ -80,11 +84,21 @@ export interface PaginatedResponse<T> {
 // Request Body Types
 export interface CreateUserRequest {
   name: string;
-  email: string;
-  phone: string;
+  email?: string; // Optional
+  phone: string; // Required
   password?: string;
   role?: 'customer' | 'admin' | 'vendor';
   address?: IAddress;
+}
+
+// OTP Request Types
+export interface SendOTPRequest {
+  phone: string;
+}
+
+export interface VerifyOTPRequest {
+  phone: string;
+  otp: string;
 }
 
 export interface UpdateUserRequest {

@@ -51,6 +51,12 @@
   animation: blink 0.8s step-end infinite;
 }
 
+/* Hide cursor when typing is complete */
+.typingComplete {
+  border-right: none;
+  animation: none;
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
   .slogan {

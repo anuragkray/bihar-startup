@@ -19,6 +19,7 @@ interface CarouselProps {
 const CarouselClient: React.FC<CarouselProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slogan, setSlogan] = useState("");
+  const [isTypingComplete, setIsTypingComplete] = useState(false);
 
   useEffect(() => {
     let charIndex = 0;
@@ -27,6 +28,7 @@ const CarouselClient: React.FC<CarouselProps> = ({ images }) => {
 
     // Reset slogan before typing starts
     setSlogan(""); // Clear the previous slogan before starting new typing
+    setIsTypingComplete(false); // Reset typing complete state
 
     // Function to type out the slogan
     const typeSlogan = () => {
@@ -37,6 +39,8 @@ const CarouselClient: React.FC<CarouselProps> = ({ images }) => {
         charIndex++;
         typingTimeout = setTimeout(typeSlogan, 200); // Typing speed
       } else {
+        // Mark typing as complete
+        setIsTypingComplete(true);
         // Delay before switching image to allow full slogan display
         switchInterval = setTimeout(() => {
           setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -72,7 +76,7 @@ const CarouselClient: React.FC<CarouselProps> = ({ images }) => {
 
       {/* Slogan Typing Effect */}
       <div className={styles.sloganContainer}>
-        <span className={styles.slogan}>{slogan}</span>
+        <span className={`${styles.slogan} ${isTypingComplete ? styles.typingComplete : ''}`}>{slogan}</span>
       </div>
     </div>
   );
