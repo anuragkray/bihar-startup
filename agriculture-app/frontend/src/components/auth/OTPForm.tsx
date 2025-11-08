@@ -120,7 +120,11 @@ export default function OTPForm({ onClose, onSwitchToLogin }: OTPFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    otpSent ? handleVerifyOTP() : handleSendOTP();
+    if (otpSent) {
+      handleVerifyOTP();
+    } else {
+      handleSendOTP();
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

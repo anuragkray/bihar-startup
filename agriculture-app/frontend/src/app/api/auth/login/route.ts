@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Build query based on what was provided
-    let query: any = {};
+    const query: any = {};
     
     if (email) {
       // Validate email format
